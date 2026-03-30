@@ -480,7 +480,7 @@ process.on('unhandledRejection', (reason, promise) => {
 app.get('/generate', (req, res) => {
   const token = Math.random().toString(36).substring(2, 10);
   premiumTokens.add(token);
-  // Use the request's host header for dynamic domain support
+  // Always force https for TikTok Live Studio compatibility
   const host = req.get('host');
   const url = `https://${host}/overlay/${token}`;
   res.json({ url });
