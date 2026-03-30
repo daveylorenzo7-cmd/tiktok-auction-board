@@ -21,7 +21,9 @@ app.post('/api/generate-url', async (req, res) => {
     return res.status(400).json({ error: 'Invalid username' });
   }
   const cleanUsername = username.trim().replace(/^@/, '');
-  const overlayUrl = `http://localhost:${PORT}/overlay?username=${encodeURIComponent(cleanUsername)}`;
+  // Always use https and the current host for overlay URLs
+  const host = req.get('host');
+  const overlayUrl = `https://${host}/overlay?username=${encodeURIComponent(cleanUsername)}`;
   if (!tiktokSessions[cleanUsername]) {
     console.log(`[TikTok] Connecting to TikTok for @${cleanUsername}`);
     const tiktokConnection = new WebcastPushConnection(cleanUsername);
