@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top Contributors | Tikstream Auction Board</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #181a20;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      color: #fff;
+    }
+    .dashboard {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+    }
+    .header-title {
+      font-size: 2.2em;
+      font-weight: 800;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-title .icon {
+      font-size: 1.2em;
+    }
+    .header-sub {
+      font-size: 1.1em;
+      color: #b0b8d1;
+      margin-bottom: 0;
+    }
+    .earnings-box {
+      background: #23243a;
+      border-radius: 12px;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1em;
+      color: #ffd700;
+      font-weight: 700;
+      box-shadow: 0 2px 8px #0002;
+    }
+    .main-content {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+    .status-card, .settings-card, .badges-card, .leader-card {
+      background: #23243a;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px #0003;
+      padding: 24px;
+      margin-bottom: 0;
+    }
+    .status-card {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 340px;
+    }
+    .status-label {
+      color: #00ffb0;
+      font-weight: 700;
+      font-size: 1.1em;
+      margin-bottom: 12px;
+    }
+    .timer-remaining {
+      font-size: 2.8em;
+      font-weight: 800;
+      color: #00ffb0;
+      margin: 18px 0 0 0;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 12px #00ffb055;
+    }
+    .settings-card {
+      flex: 1.2;
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .settings-title {
+      color: #7b8cff;
+      font-size: 1.15em;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .settings-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .settings-label {
+      font-size: 1em;
+      color: #fff;
+      font-weight: 600;
+      min-width: 120px;
+    }
+    .settings-input {
+      width: 60px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 1.1em;
+      background: #181a20;
+      color: #fff;
+      text-align: center;
+    }
+    .settings-btn {
+      background: linear-gradient(90deg, #00f2ea 0%, #7b8cff 100%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+      margin-right: 8px;
+      margin-bottom: 0;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px #0002;
+    }
+    .settings-btn-intimidating {
+      font-family: 'Oswald', 'Arial Black', Arial, sans-serif;
+      font-size: 1.15em;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 4px #0007;
+      text-transform: uppercase;
+    }
+      <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+    .settings-btn-green {
+      background: linear-gradient(90deg, #00c853 0%, #00f2ea 100%);
+    }
+    .settings-btn-red {
+      background: linear-gradient(90deg, #ff0050 0%, #ff7b7b 100%);
+    }
+    .settings-btn-orange {
+      background: linear-gradient(90deg, #ff7b00 0%, #ff0050 100%);
+    }
+    .settings-btn-purple {
+      background: linear-gradient(90deg, #7b8cff 0%, #00f2ea 100%);
+    }
+    .settings-btn:active {
+      filter: brightness(0.95);
+    }
+    .badges-card {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .badges-title {
+      color: #b388ff;
+      font-size: 1.1em;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .badge-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #181a20;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1.05em;
+      font-weight: 600;
+    }
+    .badge-row .badge-icon {
+      font-size: 1.2em;
+      margin-right: 6px;
+    }
+    .badge-row .badge-label {
+      margin-right: 8px;
+    }
+    .badge-row .badge-value {
+      color: #ffd700;
+      margin-left: 8px;
+      font-weight: 700;
+    }
+    .leader-card {
+      margin-top: 24px;
+      background: #23243a;
+      border-radius: 12px;
+      padding: 18px 24px;
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px #0002;
+    }
+    .leader-card .leader-label {
+      color: #ffd700;
+      margin-right: 8px;
+    }
+    .leader-card .leader-name {
+      color: #fff;
+      font-weight: 800;
+      margin-right: 8px;
+    }
+    .leader-card .leader-badge {
+      background: #ff0050;
+      color: #fff;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.95em;
+      font-weight: 700;
+    }
+    @media (max-width: 1100px) {
+      .dashboard-header, .main-content { flex-direction: column; gap: 18px; }
+      .main-content { align-items: stretch; }
+    }
+    @media (max-width: 800px) {
+      .dashboard { padding: 8px 0; }
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Coin Match Control Center</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+        <style>
+          body {
+            background: #181a20;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            color: #fff;
+          }
+          .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+          }
+          .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+          }
+          .header-title {
+            font-size: 2.2em;
+            font-weight: 800;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+          }
+          .header-title .icon {
+            font-size: 1.2em;
+          }
+          .header-sub {
+            font-size: 1.1em;
+            color: #b0b8d1;
+            margin-bottom: 0;
+          }
+          .earnings-box {
+            background: #23243a;
+            border-radius: 12px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1em;
+            color: #ffd700;
+            font-weight: 700;
+            box-shadow: 0 2px 8px #0002;
+          }
+          .main-content {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+          }
+          .status-card, .settings-card, .badges-card, .leader-card {
+            background: #23243a;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px #0003;
+            padding: 24px;
+            margin-bottom: 0;
+          }
+          .status-card {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 340px;
+          }
+          .status-label {
+            color: #00ffb0;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+          }
+          .timer-remaining {
+            font-size: 2.8em;
+            font-weight: 800;
+            color: #00ffb0;
+            margin: 18px 0 0 0;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 12px #00ffb055;
+          }
+          .settings-card {
+            flex: 1.2;
+            margin-bottom: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+          }
+          .settings-title {
+            color: #7b8cff;
+            font-size: 1.15em;
+            font-weight: 700;
+            margin-bottom: 10px;
+          }
+          .settings-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 10px;
+          }
+          .settings-label {
+            font-size: 1em;
+            color: #fff;
+            font-weight: 600;
+            min-width: 120px;
+          }
+          .settings-input {
+            width: 60px;
+            padding: 7px 10px;
+            border-radius: 6px;
+            border: none;
+            font-size: 1.1em;
+            background: #181a20;
+            color: #fff;
+            text-align: center;
+          }
+          .settings-btn {
+            background: linear-gradient(90deg, #00f2ea 0%, #7b8cff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 18px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            margin-right: 8px;
+            margin-bottom: 0;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px #0002;
+          }
+          .settings-btn-green {
+            background: linear-gradient(90deg, #00c853 0%, #00f2ea 100%);
+          }
+          .settings-btn-red {
+            background: linear-gradient(90deg, #ff0050 0%, #ff7b7b 100%);
+          }
+          .settings-btn-orange {
+            background: linear-gradient(90deg, #ff7b00 0%, #ff0050 100%);
+          }
+          .settings-btn-purple {
+            background: linear-gradient(90deg, #7b8cff 0%, #00f2ea 100%);
+          }
+          .settings-btn:active {
+            filter: brightness(0.95);
+          }
+          .badges-card {
+            margin-top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+          }
+          .badges-title {
+            color: #b388ff;
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 8px;
+          }
+          .badge-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #181a20;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 1.05em;
+            font-weight: 600;
+          }
+          .badge-row .badge-icon {
+            font-size: 1.2em;
+            margin-right: 6px;
+          }
+          .badge-row .badge-label {
+            margin-right: 8px;
+          }
+          .badge-row .badge-value {
+            color: #ffd700;
+            margin-left: 8px;
+            font-weight: 700;
+          }
+          .leader-card {
+            margin-top: 24px;
+            background: #23243a;
+            border-radius: 12px;
+            padding: 18px 24px;
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px #0002;
+          }
+          .leader-card .leader-label {
+            color: #ffd700;
+            margin-right: 8px;
+          }
+          .leader-card .leader-name {
+            color: #fff;
+            font-weight: 800;
+            margin-right: 8px;
+          }
+          .leader-card .leader-badge {
+            background: #ff0050;
+            color: #fff;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 0.95em;
+            font-weight: 700;
+          }
+          @media (max-width: 1100px) {
+            .dashboard-header, .main-content { flex-direction: column; gap: 18px; }
+            .main-content { align-items: stretch; }
+          }
+          @media (max-width: 800px) {
+            .dashboard { padding: 8px 0; }
+            .status-card, .settings-card, .badges-card, .leader-card { padding: 12px; }
+          }
+        </style>
+      </head>
+      <body>
+      <!-- Premium Banner and Warning Bar -->
+      <style>
+        .premium-banner {
+          position: fixed;
+          top: 0; left: 0; width: 100vw; z-index: 1000;
+          animation: slideDown 0.7s cubic-bezier(.77,0,.18,1) 0s 1;
+        }
+        @keyframes slideDown {
+          0% { transform: translateY(-100%); opacity: 0; }
+          100% { transform: translateY(0); opacity: 1; }
+        }
+        .premium-gradient {
+          background: linear-gradient(90deg, #ff0050 0%, #ff7b7b 40%, #ffb347 100%);
+          padding: 1.1em 0.5em 1.1em 0.5em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 32px;
+          box-shadow: 0 4px 24px #ff005033;
+        }
+        .premium-icon {
+          font-size: 1.7em;
+          margin-right: 16px;
+          filter: drop-shadow(0 2px 8px #fff6);
+        }
+        .premium-title {
+          font-weight: 900;
+          font-size: 1.25em;
+          letter-spacing: 1px;
+          color: #fff;
+          text-shadow: 0 2px 8px #ff005055;
+        }
+        .premium-desc {
+          font-size: 1.08em;
+          opacity: 0.93;
+          color: #fff;
+          margin-left: 10px;
+          font-weight: 500;
+          text-shadow: 0 1px 4px #ff005033;
+        }
+        .premium-cta {
+          margin-left: 32px;
+          background: linear-gradient(90deg, #fff 0%, #ffe0e0 100%);
+          color: #ff0050;
+          font-weight: 900;
+          border: none;
+          border-radius: 12px;
+          padding: 12px 32px;
+          font-size: 1.13em;
+          box-shadow: 0 4px 16px #ff005033, 0 2px 8px #fff2;
+          cursor: pointer;
+          letter-spacing: 1px;
+          transition: transform 0.15s cubic-bezier(.77,0,.18,1), box-shadow 0.15s;
+          outline: none;
+        }
+        .premium-cta:hover {
+          transform: scale(1.06);
+          box-shadow: 0 8px 32px #ff005055, 0 2px 8px #fff2;
+          background: linear-gradient(90deg, #ffe0e0 0%, #fff 100%);
+        }
+        .premium-warning {
+          background: linear-gradient(90deg, #d32f2f 0%, #ff9800 100%);
+          color: #fff;
+          padding: 0.6em 0;
+          text-align: center;
+          font-weight: 700;
+          font-size: 1.08em;
+          letter-spacing: 0.5px;
+          box-shadow: 0 2px 8px #d32f2f33;
+        }
+      </style>
+      <div class="premium-banner">
+        <div class="premium-gradient">
+          <span class="premium-icon">🔒</span>
+          <span class="premium-title">Unlock Premium</span>
+          <span class="premium-desc">Get access to all features, priority support, and exclusive overlays. Elevate your stream with the best tools!</span>
+          <button class="premium-cta">👑 Upgrade Now – $8.50 USD/month</button>
+        </div>
+        <div class="premium-warning">
+          <span style="font-size:1.2em;vertical-align:middle;">⚠️</span>
+          <span style="margin-left:8px;">Any scamming or misuse will result in a permanent ban.</span>
+        </div>
+      </div>
+      <div style="height:108px;"></div> <!-- Spacer for fixed bars -->
+      <div class="dashboard">
+        <!-- Overlay URL Generator -->
+        <div style="max-width:600px;margin:0 auto 32px auto;padding:24px 32px;background:#23243a;border-radius:16px;box-shadow:0 2px 16px #0003;display:flex;flex-direction:column;align-items:center;">
+          <h2 style="color:#ff0050;font-size:1.3em;font-weight:800;margin-bottom:12px;letter-spacing:1px;">Get Your Secure TikTok Overlay URL</h2>
+          <div style="color:#b0b8d1;font-size:1.08em;margin-bottom:18px;text-align:center;">Enter your TikTok username to generate a unique, private overlay URL for TikTok Studio. <b>Keep this link secret!</b></div>
+          <form id="url-gen-form" style="display:flex;gap:12px;width:100%;max-width:420px;">
+            <input id="url-gen-username" type="text" placeholder="Enter your TikTok username" style="flex:1;padding:10px 14px;border-radius:8px;border:none;font-size:1.08em;background:#181a20;color:#fff;" required>
+            <button type="submit" style="background:linear-gradient(90deg,#ff0050 0%,#ffb347 100%);color:#fff;font-weight:800;border:none;border-radius:8px;padding:10px 22px;font-size:1.08em;cursor:pointer;box-shadow:0 2px 8px #ff005033;">Generate URL</button>
+          </form>
+          <div id="url-gen-result" style="margin-top:18px;font-size:1.08em;word-break:break-all;color:#00f2ea;font-weight:700;"></div>
+          <button id="copy-url-btn" style="display:none;margin-top:10px;padding:8px 18px;border-radius:8px;background:#23243a;color:#fff;font-weight:700;cursor:pointer;border:none;">Copy URL</button>
+        </div>
+          <div class="dashboard-header">
+            <div>
+              <div class="header-title"><span class="icon">🎮</span> Coin Match Control Center</div>
+              <div class="header-sub">Monitor and control your match</div>
+            </div>
+            <div class="earnings-box">
+              <span>Your Earnings (43%)</span>
+              <span style="color:#ffd700;">0</span>
+              <span style="color:#00ffb0;">$0.00 USD</span>
+            </div>
+          </div>
+          <div class="main-content">
+            <div class="status-card">
+              <div class="status-label">Live Status</div>
+              <div style="margin:18px 0 0 0; font-size:1.1em; color:#b0b8d1;">TIME REMAINING</div>
+              <div class="timer-remaining" id="timer">2:00</div>
+            </div>
+            <div class="settings-card">
+              <div class="settings-title">Timer Settings</div>
+              <div class="settings-row">
+                <div class="settings-label">Match Duration</div>
+                <input class="settings-input" id="match-min" type="number" min="0" value="2"> :
+                <input class="settings-input" id="match-sec" type="number" min="0" max="59" value="0">
+              </div>
+              <div class="settings-row">
+                <div class="settings-label" style="color:#ff7b7b;">Snipe Delay</div>
+                <input class="settings-input" id="snipe-delay" type="number" min="0" value="20"> <span style="color:#b0b8d1;">sec</span>
+              </div>
+              <div style="display:flex;gap:12px;margin-bottom:10px;">
+                <button class="settings-btn settings-btn-intimidating settings-btn-green" id="start-match">▶️ START MATCH</button>
+                <button class="settings-btn settings-btn-intimidating" id="plus30" disabled>+30s</button>
+                <button class="settings-btn settings-btn-intimidating" id="minus30" disabled>-30s</button>
+              </div>
+              <button class="settings-btn settings-btn-intimidating settings-btn-red" id="pause-match">⏸️ PAUSE</button>
+              <button class="settings-btn settings-btn-intimidating settings-btn-orange" id="finish-match">🏁 FINISH</button>
+              <button class="settings-btn settings-btn-intimidating settings-btn-purple" id="restart-match">🔄 RESTART</button>
+            </div>
+          </div>
+          <div class="badges-card">
+            <div class="badges-title">Overlay Badges <span style="font-size:0.9em;color:#b0b8d1;">Visible on stream</span></div>
+            <div class="badge-row">
+              <span class="badge-icon">✔️</span>
+              <span class="badge-label" style="color:#ffd700;">MINIMUM</span>
+              <input id="badge-minimum" type="number" min="0" value="1" style="width:60px; margin:0 8px; padding:4px 8px; border-radius:4px; border:none; background:#23243a; color:#ffd700; font-weight:700; font-size:1em; text-align:right;"> <span class="badge-value">coins</span>
+            </div>
+            <div class="badge-row">
+              <span class="badge-icon">❌</span>
+              <span class="badge-label" style="color:#ff7b7b;">SNIPE DELAY</span>
+              <input id="badge-snipe" type="number" min="0" value="20" style="width:60px; margin:0 8px; padding:4px 8px; border-radius:4px; border:none; background:#23243a; color:#ffd700; font-weight:700; font-size:1em; text-align:right;"> <span class="badge-value">sec</span>
+            </div>
+          </div>
+          <div class="leader-card">
+            <span class="leader-label">👑 CURRENT LEADER</span>
+            <span class="leader-name" id="leader-name">test_user_1</span>
+            <span class="leader-badge">TEST</span>
+            <span style="margin-left:18px; color:#b0b8d1;">PHASE -</span>
+          </div>
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+          // Live update badge values
+          const badgeMin = document.getElementById('badge-minimum');
+          const badgeSnipe = document.getElementById('badge-snipe');
+          badgeMin.addEventListener('input', function() {
+            this.style.color = '#ffd700';
+          });
+          badgeSnipe.addEventListener('input', function() {
+            this.style.color = '#ffd700';
+          });
+
+          // Overlay URL Generator logic
+          const urlGenForm = document.getElementById('url-gen-form');
+          const urlGenUsername = document.getElementById('url-gen-username');
+          const urlGenResult = document.getElementById('url-gen-result');
+          if (urlGenForm) {
+            urlGenForm.addEventListener('submit', async (e) => {
+              e.preventDefault();
+              urlGenResult.textContent = 'Generating...';
+              document.getElementById('copy-url-btn').style.display = 'none';
+              const username = urlGenUsername.value.trim();
+              if (!username) {
+                urlGenResult.textContent = 'Please enter your TikTok username.';
+                return;
+              }
+              try {
+                const res = await fetch('/api/generate-overlay-token', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ username })
+                });
+                const data = await res.json();
+                if (data.overlayUrl) {
+                  urlGenResult.innerHTML = `<span style='color:#fff;'>Your private overlay URL:</span><br><span id='overlay-url' style='font-size:1.08em;color:#00f2ea;'>${data.overlayUrl}</span><br><span style='color:#b0b8d1;font-size:0.98em;'>Add this as a Web Source in TikTok Studio. <b>Do not share this link!</b></span>`;
+                  const copyBtn = document.getElementById('copy-url-btn');
+                  copyBtn.style.display = '';
+                  copyBtn.onclick = function() {
+                    const urlText = document.getElementById('overlay-url').textContent;
+                    navigator.clipboard.writeText(urlText);
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => { copyBtn.textContent = 'Copy URL'; }, 1500);
+                  };
+                } else {
+                  urlGenResult.textContent = data.error || 'Failed to generate URL.';
+                }
+              } catch (err) {
+                urlGenResult.textContent = 'Error generating URL.';
+              }
+            });
+          }
+        </script>
+        <script src="app.js"></script>
+        <script>
+          // Timer add/subtract logic with registration check
+          let registeredUsername = null;
+          function enableTimerButtons() {
+            document.getElementById('plus30').disabled = false;
+            document.getElementById('minus30').disabled = false;
+          }
+          // Example registration logic (replace with your actual registration flow)
+          function registerUserForTimer() {
+            const usernameInput = document.getElementById('url-gen-username');
+            if (!usernameInput) return;
+            const username = usernameInput.value.trim();
+            if (!username) {
+              alert('Please enter your TikTok username first.');
+              return;
+            }
+            registeredUsername = username;
+            enableTimerButtons();
+          }
+          document.getElementById('start-match')?.addEventListener('click', registerUserForTimer);
+          document.getElementById('plus30')?.addEventListener('click', function() {
+            if (!registeredUsername) return;
+            window.dispatchEvent(new CustomEvent('timer-add', { detail: 30 }));
+          });
+          document.getElementById('minus30')?.addEventListener('click', function() {
+            if (!registeredUsername) return;
+            window.dispatchEvent(new CustomEvent('timer-add', { detail: -30 }));
+          });
+        </script>
+        <script>
+          // Timer add/subtract logic
+          document.getElementById('plus30')?.addEventListener('click', function() {
+            window.dispatchEvent(new CustomEvent('timer-add', { detail: 30 }));
+          });
+          document.getElementById('minus30')?.addEventListener('click', function() {
+            window.dispatchEvent(new CustomEvent('timer-add', { detail: -30 }));
+          });
+        </script>
+      </body>
+      </html>
