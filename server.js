@@ -476,10 +476,12 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 // Generate random overlay URL endpoint for Render or local
+// Overlay URL generator for Render deployment
 app.get('/generate', (req, res) => {
   const token = Math.random().toString(36).substring(2, 10);
   premiumTokens.add(token);
-  // Always use https for TikTok Live Studio compatibility
-  const url = `https://tiktok-auction-board-9h6t.onrender.com/overlay/${token}`;
+  // Use the request's host header for dynamic domain support
+  const host = req.get('host');
+  const url = `https://${host}/overlay/${token}`;
   res.json({ url });
 });
