@@ -1,7 +1,4 @@
-﻿
-
-
-const express = require('express');
+﻿const express = require('express');
 const app = express();
 const path = require('path');
 const http = require('http').createServer(app);
@@ -476,4 +473,13 @@ process.on('uncaughtException', (err) => {
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
   process.exit(1);
+});
+
+// Generate random overlay URL endpoint for Render or local
+app.get('/generate', (req, res) => {
+  const token = Math.random().toString(36).substring(2, 10);
+  premiumTokens.add(token);
+  // Always use https for TikTok Live Studio compatibility
+  const url = `https://tiktok-auction-board-9h6t.onrender.com/overlay/${token}`;
+  res.json({ url });
 });
