@@ -1,10 +1,4 @@
-﻿// Generate random overlay URL endpoint for Render or local
-app.get('/generate', (req, res) => {
-  const token = Math.random().toString(36).substring(2, 10);
-  premiumTokens.add(token); // THIS IS THE IMPORTANT PART
-  const url = `${req.protocol}://${req.get('host')}/overlay/${token}`;
-  res.json({ url });
-});
+﻿
 
 
 const express = require('express');
