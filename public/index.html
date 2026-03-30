@@ -647,7 +647,12 @@
                 });
                 const data = await res.json();
                 if (data.overlayUrl) {
-                  urlGenResult.innerHTML = `<span style='color:#fff;'>Your private overlay URL:</span><br><span id='overlay-url' style='font-size:1.08em;color:#00f2ea;'>${data.overlayUrl}</span><br><span style='color:#b0b8d1;font-size:0.98em;'>Add this as a Web Source in TikTok Studio. <b>Do not share this link!</b></span>`;
+                  // Always force https in the displayed overlay URL
+                  let overlayUrl = data.overlayUrl;
+                  if (overlayUrl.startsWith('http://')) {
+                    overlayUrl = overlayUrl.replace('http://', 'https://');
+                  }
+                  urlGenResult.innerHTML = `<span style='color:#fff;'>Your private overlay URL:</span><br><span id='overlay-url' style='font-size:1.08em;color:#00f2ea;'>${overlayUrl}</span><br><span style='color:#b0b8d1;font-size:0.98em;'>Add this as a Web Source in TikTok Studio. <b>Do not share this link!</b></span>`;
                   const copyBtn = document.getElementById('copy-url-btn');
                   copyBtn.style.display = '';
                   copyBtn.onclick = function() {
