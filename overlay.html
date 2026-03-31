@@ -1,1 +1,54 @@
 ﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Overlay Timer</title>
+	<style>
+		body {
+			background: transparent;
+			margin: 0;
+			font-family: 'Inter', Arial, sans-serif;
+			color: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+		}
+		.timer-remaining {
+			font-size: 4em;
+			font-weight: 800;
+			color: #00ffb0;
+			letter-spacing: 2px;
+			text-shadow: 0 2px 12px #00ffb055;
+			background: rgba(24,26,32,0.7);
+			border-radius: 16px;
+			padding: 0.2em 1.2em;
+		}
+	</style>
+</head>
+<body>
+	<div class="timer-remaining" id="timer">2:00</div>
+	<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+	<script>
+		// Get token from URL (if needed for room join)
+		const pathParts = window.location.pathname.split('/');
+		const token = pathParts[pathParts.length - 1];
+		// Connect to backend
+		const socket = io({ transports: ['websocket'] });
+
+		// Listen for timer updates from backend
+		socket.on('timer-update', (data) => {
+			if (!data) return;
+			const min = Math.floor(data.time / 60);
+			const sec = data.time % 60;
+			document.getElementById('timer').textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+		});
+
+		// Optionally, join a room if your backend uses rooms per match/token
+		socket.emit('join', token);
+	</script>
+</body>
+</html>
+
