@@ -336,18 +336,18 @@ app.get('/u/:username', (req, res) => {
 
 
 // Secure overlay route: /overlay/:token
+// Public overlay route for TikTok Studio compatibility (token check removed for testing)
 app.get('/overlay/:token', (req, res) => {
-  const token = req.params.token;
-  if (!premiumTokens.has(token)) {
-    return res.status(404).send('Invalid or expired overlay link.');
-  }
-  // Serve the overlay HTML (replace with your actual overlay file if needed)
+  // TikTok Studio compatibility headers
   res.setHeader('ngrok-skip-browser-warning', 'true');
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
   res.setHeader('X-Frame-Options', 'ALLOWALL');
   res.setHeader('Content-Security-Policy', 'frame-ancestors *;');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.sendFile(path.join(__dirname, 'public', 'overlay.html'));
 });
 
