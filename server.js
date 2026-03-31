@@ -399,6 +399,9 @@ io.on('connection', (socket) => {
     socket.join(normalizedUsername);
     console.log(`Socket ${socket.id} joined room ${normalizedUsername}`);
 
+    // INSTANT feedback for dashboard connect
+    socket.emit('tiktok-connected');
+
     const stream = getOrCreateStream(normalizedUsername);
     if (!stream.connection) {
       emitTikTokStatus(normalizedUsername, '⚠️', 'tikstream: Not connected yet');

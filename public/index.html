@@ -638,11 +638,17 @@
               if (dashSocket) dashSocket.disconnect();
               dashSocket = io({ transports: ['websocket'] });
               dashSocket.emit('join', username);
+              let connectTimeout = setTimeout(() => {
+                dashStatus.textContent = 'Connection timed out. Please try again.';
+                dashStatus.style.color = '#ff0050';
+              }, 5000);
               dashSocket.on('tiktok-connected', () => {
+                clearTimeout(connectTimeout);
                 dashStatus.textContent = 'Connected to TikTok live!';
                 dashStatus.style.color = '#00ffb0';
               });
               dashSocket.on('tiktok-error', (data) => {
+                clearTimeout(connectTimeout);
                 dashStatus.textContent = data?.message || 'Failed to connect.';
                 dashStatus.style.color = '#ff0050';
               });
