@@ -108,21 +108,59 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			background: #23243a;
-			border-radius: 8px;
-			padding: 8px 12px;
-			margin-bottom: 6px;
-			font-size: 1.08em;
+			border-radius: 12px;
+			padding: 10px 16px;
+			margin-bottom: 8px;
+			font-size: 1.13em;
 			font-weight: 700;
+			box-shadow: 0 2px 8px #0002;
+			border: 2px solid transparent;
+			transition: background 0.2s, border 0.2s;
+		}
+		.leader-row.gold {
+			background: linear-gradient(90deg, #ffe082 0%, #ffd700 100%);
+			color: #23243a;
+			border-color: #ffd700;
+		}
+		.leader-row.silver {
+			background: linear-gradient(90deg, #e0e0e0 0%, #b0b8d1 100%);
+			color: #23243a;
+			border-color: #b0b8d1;
+		}
+		.leader-row.bronze {
+			background: linear-gradient(90deg, #ffcc80 0%, #ffb347 100%);
+			color: #23243a;
+			border-color: #ffb347;
+		}
+		.leader-row.default {
+			background: #23243a;
+			color: #fff;
+			border-color: #23243a;
+		}
+		.leader-medal {
+			font-size: 1.3em;
+			margin-right: 10px;
+			width: 2em;
+			display: inline-block;
+			text-align: center;
 		}
 		.leader-name {
-			color: #ffd700;
 			font-weight: 800;
+			margin-right: 8px;
+			letter-spacing: 0.5px;
 		}
 		.leader-coins {
-			color: #00f2ea;
-			font-weight: 700;
+			color: #23243a;
+			background: #ffd700;
+			border-radius: 8px;
+			padding: 2px 12px;
+			font-weight: 900;
 			margin-left: 8px;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			font-size: 1.08em;
+			box-shadow: 0 1px 4px #ffd70044;
 		}
 		.participants {
 			color: #b0b8d1;
@@ -204,13 +242,22 @@
 					const sorted = Object.entries(bids).sort((a, b) => b[1] - a[1]);
 					sorted.forEach(([name, coins], i) => {
 						const row = document.createElement('div');
-						row.className = 'leader-row';
-						row.innerHTML = `<span class=\"leader-name\">${name}</span><span class=\"leader-coins\">${coins} 🪙</span>`;
+						let medal = '';
+						let rowClass = 'default';
+						if (i === 0) { medal = '🥇'; rowClass = 'gold'; }
+						else if (i === 1) { medal = '🥈'; rowClass = 'silver'; }
+						else if (i === 2) { medal = '🥉'; rowClass = 'bronze'; }
+						row.className = 'leader-row ' + rowClass;
+						row.innerHTML = `
+							<span class="leader-medal">${medal}</span>
+							<span class="leader-name">${name}</span>
+							<span class="leader-coins">${coins} <span style='font-size:1.1em;'>🪙</span></span>
+						`;
 						leaderboard.appendChild(row);
 					});
-					document.getElementById('participants').textContent = 'total participants: ' + sorted.length;
+					document.getElementById('participants').textContent = 'Total participants: ' + sorted.length;
 				} else {
-					document.getElementById('participants').textContent = 'total participants: 0';
+					document.getElementById('participants').textContent = 'Total participants: 0';
 				}
 			});
 		};
