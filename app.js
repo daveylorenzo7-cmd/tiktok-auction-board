@@ -9,7 +9,7 @@ app.post('/api/generate-overlay-token', (req, res) => {
   const token = Math.random().toString(36).substr(2, 12);
   // Return the overlay URL (customize as needed)
   const overlayUrl = `${req.protocol}://${req.get('host')}/overlay.html?token=${token}&username=${encodeURIComponent(username)}`;
-  res.json({ url: overlayUrl, token });
+  res.json({ overlayUrl });
 });
 const express = require("express");
 const http = require("http");
