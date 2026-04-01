@@ -5,6 +5,246 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Overlay Timer</title>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+	<style>
+		body {
+			background: #181a20;
+			font-family: 'Inter', sans-serif;
+			margin: 0;
+			color: #fff;
+		}
+		.overlay-container {
+			max-width: 420px;
+			margin: 0 auto;
+			padding: 24px 0 0 0;
+			display: flex;
+			flex-direction: column;
+			gap: 18px;
+			align-items: center;
+		}
+		.status-card {
+			background: #23243a;
+			border-radius: 16px;
+			box-shadow: 0 2px 16px #0003;
+			padding: 18px 24px;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		.status-label {
+			color: #00ffb0;
+			font-weight: 700;
+			font-size: 1.1em;
+			margin-bottom: 8px;
+		}
+		.timer-remaining {
+			font-size: 2.2em;
+			font-weight: 800;
+			color: #00ffb0;
+			margin: 10px 0 0 0;
+			letter-spacing: 2px;
+			text-shadow: 0 2px 12px #00ffb055;
+		}
+		.badge-row {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			background: #181a20;
+			border-radius: 8px;
+			padding: 8px 14px;
+			font-size: 1.05em;
+			font-weight: 600;
+			margin: 8px 0;
+			width: 100%;
+			justify-content: space-between;
+		}
+		.badge-label {
+			color: #ffd700;
+			font-weight: 700;
+		}
+		.badge-value {
+			color: #fff;
+			font-weight: 700;
+			background: #23243a;
+			border-radius: 6px;
+			padding: 2px 8px;
+		}
+		.snipe-delay {
+			color: #ff7b7b;
+			font-weight: 700;
+			font-size: 1.1em;
+			margin: 0 0 8px 0;
+		}
+		.leaderboard {
+			width: 100%;
+			margin-top: 10px;
+		}
+		.leader-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-radius: 12px;
+			padding: 10px 16px;
+			margin-bottom: 8px;
+			font-size: 1.13em;
+			font-weight: 700;
+			box-shadow: 0 2px 8px #0002;
+			border: 2px solid transparent;
+			transition: background 0.2s, border 0.2s;
+		}
+		.leader-row.gold {
+			background: linear-gradient(90deg, #ffe082 0%, #ffd700 100%);
+			color: #23243a;
+			border-color: #ffd700;
+		}
+		.leader-row.silver {
+			background: linear-gradient(90deg, #e0e0e0 0%, #b0b8d1 100%);
+			color: #23243a;
+			border-color: #b0b8d1;
+		}
+		.leader-row.bronze {
+			background: linear-gradient(90deg, #ffcc80 0%, #ffb347 100%);
+			color: #23243a;
+			border-color: #ffb347;
+		}
+		.leader-row.default {
+			background: #23243a;
+			color: #fff;
+			border-color: #23243a;
+		}
+		.leader-medal {
+			font-size: 1.3em;
+			margin-right: 10px;
+			width: 2em;
+			display: inline-block;
+			text-align: center;
+		}
+		.leader-name {
+			font-weight: 800;
+			margin-right: 8px;
+			letter-spacing: 0.5px;
+		}
+		.leader-coins {
+			color: #23243a;
+			background: #ffd700;
+			border-radius: 8px;
+			padding: 2px 12px;
+			font-weight: 900;
+			margin-left: 8px;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			font-size: 1.08em;
+			box-shadow: 0 1px 4px #ffd70044;
+		}
+		.participants {
+			color: #b0b8d1;
+			font-size: 1em;
+			margin-top: 8px;
+			text-align: right;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div class="overlay-container">
+		<div id="username-bar" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+			<input id="username-input" type="text" placeholder="Enter your TikTok username" style="padding:10px 18px;font-size:1.1em;border-radius:8px;border:none;outline:none;max-width:220px;width:100%;text-align:center;">
+			<button id="connect-btn" class="settings-btn settings-btn-intimidating settings-btn-green" style="padding:8px 18px;font-size:1em;">Connect</button>
+		</div>
+		<div id="overlay-content" style="display:none;width:100%;">
+			<div class="status-card">
+				<div class="status-label">TIME REMAINING</div>
+				<div class="timer-remaining" id="timer">2:00</div>
+				<div class="badge-row">
+					<span class="badge-label">MINIMUM</span>
+					<span class="badge-value" id="minimum">no minimum</span>
+				</div>
+				<div class="badge-row">
+					<span class="badge-label">SNIPE DELAY</span>
+					<span class="badge-value" id="snipe-delay">20s</span>
+				</div>
+			</div>
+			<div class="leaderboard" id="leaderboard">
+				<!-- Leaderboard rows will be injected here -->
+			</div>
+			<div class="participants" id="participants">total participants: 0</div>
+		</div>
+	</div>
+	<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+	<script>
+		let socket = null;
+		let joined = false;
+		document.getElementById('connect-btn').onclick = function() {
+			const username = document.getElementById('username-input').value.trim();
+			if (!username) {
+				alert('Please enter your TikTok username.');
+				return;
+			}
+			if (joined) return;
+			joined = true;
+			document.getElementById('username-bar').style.display = 'none';
+			document.getElementById('overlay-content').style.display = '';
+			socket = io({ transports: ['websocket'] });
+			socket.emit('join', username);
+			// Set initial values
+			document.getElementById('timer').textContent = '2:00';
+			document.getElementById('snipe-delay').textContent = '20s';
+			document.getElementById('minimum').textContent = 'no minimum';
+			document.getElementById('participants').textContent = 'total participants: 0';
+			// Listen for timer updates
+			socket.on('timer-update', (data) => {
+				if (!data) return;
+				const min = Math.floor(data.time / 60);
+				const sec = data.time % 60;
+				document.getElementById('timer').textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+			});
+			// Listen for snipe delay updates
+			socket.on('snipe-delay-update', (data) => {
+				if (typeof data?.snipeDelay === 'number') {
+					document.getElementById('snipe-delay').textContent = data.snipeDelay + 's';
+				}
+			});
+			// Listen for minimum updates
+			socket.on('min-coins-update', (data) => {
+				if (typeof data?.minCoins === 'number') {
+					document.getElementById('minimum').textContent = data.minCoins > 0 ? data.minCoins + ' coins' : 'no minimum';
+				}
+			});
+			// Listen for leaderboard updates
+			socket.on('update', (bids) => {
+				const leaderboard = document.getElementById('leaderboard');
+				leaderboard.innerHTML = '';
+				if (bids && typeof bids === 'object') {
+					const sorted = Object.entries(bids).sort((a, b) => b[1] - a[1]);
+					sorted.forEach(([name, coins], i) => {
+						const row = document.createElement('div');
+						let medal = '';
+						let rowClass = 'default';
+						if (i === 0) { medal = '🥇'; rowClass = 'gold'; }
+						else if (i === 1) { medal = '🥈'; rowClass = 'silver'; }
+						else if (i === 2) { medal = '🥉'; rowClass = 'bronze'; }
+						row.className = 'leader-row ' + rowClass;
+						row.innerHTML = `
+							<span class="leader-medal">${medal}</span>
+							<span class="leader-name">${name}</span>
+							<span class="leader-coins">${coins} <span style='font-size:1.1em;'>🪙</span></span>
+						`;
+						leaderboard.appendChild(row);
+					});
+					document.getElementById('participants').textContent = 'Total participants: ' + sorted.length;
+				} else {
+					document.getElementById('participants').textContent = 'Total participants: 0';
+				}
+			});
+		};
+	</script>
+</body>
+</html>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Overlay Timer</title>
 	<style>
 		body {
 			background: transparent;
@@ -262,6 +502,7 @@
 			});
 		};
 	</script>
+// This file will be m                                                                                                                                                              oved to public/overlay.html so it is accessible via the web server.
 </body>
 </html>
 

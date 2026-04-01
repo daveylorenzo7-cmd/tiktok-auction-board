@@ -22,7 +22,13 @@ const io = new Server(server);
 app.use(express.static("public"));
 
 io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+  console.log('User connected:', socket.id);
+
+  // Listen for auction updates from dashboard
+  socket.on('update-auction', (data) => {
+    io.emit('auction-update', data);
+  });
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });

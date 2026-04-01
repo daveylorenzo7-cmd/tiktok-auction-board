@@ -624,7 +624,7 @@
           const dashConnectBtn = document.getElementById('dashboard-connect-btn');
           const dashUsernameInput = document.getElementById('dashboard-username-input');
           const dashStatus = document.getElementById('dashboard-connect-status');
-          let dashSocket = null;
+          let socket = io();
           if (dashConnectBtn && dashUsernameInput) {
             dashConnectBtn.onclick = function() {
               const username = dashUsernameInput.value.trim();
@@ -635,25 +635,30 @@
               }
               dashStatus.textContent = 'Connecting...';
               dashStatus.style.color = '#00ffb0';
-              if (dashSocket) dashSocket.disconnect();
-              dashSocket = io({ transports: ['websocket'] });
-              dashSocket.emit('join', username);
+              socket.emit('join', username);
               let connectTimeout = setTimeout(() => {
                 dashStatus.textContent = 'Connection timed out. Please try again.';
                 dashStatus.style.color = '#ff0050';
               }, 5000);
-              dashSocket.on('tiktok-connected', () => {
+              socket.on('tiktok-connected', () => {
                 clearTimeout(connectTimeout);
                 dashStatus.textContent = 'Connected to TikTok live!';
                 dashStatus.style.color = '#00ffb0';
               });
-              dashSocket.on('tiktok-error', (data) => {
+              socket.on('tiktok-error', (data) => {
                 clearTimeout(connectTimeout);
                 dashStatus.textContent = data?.message || 'Failed to connect.';
                 dashStatus.style.color = '#ff0050';
               });
             };
           }
+
+          // Example: emit update-auction when auction data changes
+          function onAuctionDataChanged(auctionData) {
+            socket.emit('update-auction', auctionData);
+          }
+
+          // TODO: Call onAuctionDataChanged(yourAuctionData) whenever your auction state changes
         </script>
         <script>
           // Live update badge values
