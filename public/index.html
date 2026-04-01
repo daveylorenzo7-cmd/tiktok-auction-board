@@ -646,48 +646,35 @@
             this.style.color = '#ffd700';
           });
 
-          // Overlay URL Generator logic
+          // Overlay URL Generator logic (calls /generate)
           const urlGenForm = document.getElementById('url-gen-form');
-          const urlGenUsername = document.getElementById('url-gen-username');
           const urlGenResult = document.getElementById('url-gen-result');
           if (urlGenForm) {
-            urlGenForm.addEventListener('submit', async (e) => {
+            urlGenForm.addEventListener('submit', function(e) {
               e.preventDefault();
               urlGenResult.textContent = 'Generating...';
               document.getElementById('copy-url-btn').style.display = 'none';
-              const username = urlGenUsername.value.trim();
-              if (!username) {
-                urlGenResult.textContent = 'Please enter your TikTok username.';
-                return;
-              }
-              try {
-                const res = await fetch('/api/generate-overlay-token', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ username })
-                });
-                const data = await res.json();
-                if (data.overlayUrl) {
-                  // Always force https in the displayed overlay URL
-                  let overlayUrl = data.overlayUrl;
-                  if (overlayUrl.startsWith('http://')) {
-                    overlayUrl = overlayUrl.replace('http://', 'https://');
+              fetch('/generate')
+                .then(res => res.json())
+                .then(data => {
+                  if (data.url) {
+                    urlGenResult.innerHTML = `<span style='color:#fff;'>Your private overlay URL:</span><br><span id='overlay-url' style='font-size:1.08em;color:#00f2ea;'>${data.url}</span><br><span style='color:#b0b8d1;font-size:0.98em;'>Add this as a Web Source in TikTok Studio. <b>Do not share this link!</b></span>`;
+                    const copyBtn = document.getElementById('copy-url-btn');
+                    copyBtn.style.display = '';
+                    copyBtn.onclick = function() {
+                      const urlText = document.getElementById('overlay-url').textContent;
+                      navigator.clipboard.writeText(urlText);
+                      copyBtn.textContent = 'Copied!';
+                      setTimeout(() => { copyBtn.textContent = 'Copy URL'; }, 1500);
+                    };
+                  } else {
+                    urlGenResult.textContent = data.error || 'Failed to generate URL.';
                   }
-                  urlGenResult.innerHTML = `<span style='color:#fff;'>Your private overlay URL:</span><br><span id='overlay-url' style='font-size:1.08em;color:#00f2ea;'>${overlayUrl}</span><br><span style='color:#b0b8d1;font-size:0.98em;'>Add this as a Web Source in TikTok Studio. <b>Do not share this link!</b></span>`;
-                  const copyBtn = document.getElementById('copy-url-btn');
-                  copyBtn.style.display = '';
-                  copyBtn.onclick = function() {
-                    const urlText = document.getElementById('overlay-url').textContent;
-                    navigator.clipboard.writeText(urlText);
-                    copyBtn.textContent = 'Copied!';
-                    setTimeout(() => { copyBtn.textContent = 'Copy URL'; }, 1500);
-                  };
-                } else {
-                  urlGenResult.textContent = data.error || 'Failed to generate URL.';
-                }
-              } catch (err) {
-                urlGenResult.textContent = 'Error generating URL.';
-              }
+                })
+                .catch(err => {
+                  urlGenResult.textContent = 'Error generating URL.';
+                  console.error('Generate error:', err);
+                });
             });
           }
         </script>
