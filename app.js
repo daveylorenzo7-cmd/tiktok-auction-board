@@ -1,4 +1,17 @@
-﻿
+﻿const activeTokens = new Map();
+
+app.get("/generate", (req, res) => {
+  const token = Math.random().toString(36).substring(2, 10);
+
+  activeTokens.set(token, {
+    created: Date.now()
+  });
+
+  res.json({
+    url: `${req.protocol}://${req.get("host")}/overlay/${token}`
+  });
+});
+
 
 const path = require("path");
 const activeTokens = new Map();
