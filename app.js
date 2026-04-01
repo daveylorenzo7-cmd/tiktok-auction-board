@@ -1,18 +1,24 @@
 ﻿
+
 const path = require("path");
 const activeTokens = new Map();
 app.use(express.json());
 
 
 // New /generate endpoint for overlay tokens
+
 app.get("/generate", (req, res) => {
-  const token = Math.random().toString(36).substring(2, 10);
-  activeTokens.set(token, {
-    created: Date.now()
-  });
-  res.json({
-    url: `${req.protocol}://${req.get("host")}/overlay/${token}`
-  });
+  try {
+    const token = Math.random().toString(36).substring(2, 10);
+    activeTokens.set(token, {
+      created: Date.now()
+    });
+    const url = `${req.protocol}://${req.get("host")}/overlay/${token}`;
+    res.json({ url });
+  } catch (error) {
+    console.error("Generate error:", error);
+    res.status(500).json({ error: "Failed to generate URL" });
+  }
 });
 
 // Overlay route with token validation
