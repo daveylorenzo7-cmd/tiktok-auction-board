@@ -1,259 +1,508 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Auction Overlay</title>
-  <meta charset="UTF-8">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background: transparent;
-      margin: 0;
-      font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
-      color: #fff;
-    }
-    .overlay-container {
-      width: 370px;
-      margin: 18px auto;
-      background: #181926;
-      border-radius: 22px;
-      box-shadow: 0 4px 24px #000a;
-      padding: 18px 16px 14px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 14px;
-      border: none;
-      text-align: center;
-    }
-    .timer-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      margin-bottom: 2px;
-      background: #232244;
-      border-radius: 18px;
-      padding: 12px 0 8px 0;
-      box-shadow: 0 2px 8px #0003;
-    }
-    .timer-label {
-      font-size: 1.05em;
-      color: #a6a8d7;
-      font-weight: 700;
-      letter-spacing: 1px;
-      font-family: 'Poppins', 'Segoe UI Semibold', 'Arial', sans-serif;
-    }
-    .timer-display {
-      font-size: 2.2em;
-      font-weight: 900;
-      color: #2fffad;
-      letter-spacing: 1.5px;
-      text-shadow: 0 1px 12px #00ffb055;
-      font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
-    }
-    .info-bar {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #232244;
-      border-radius: 12px;
-      padding: 7px 12px;
-      font-size: 1.05em;
-      font-weight: 700;
-      margin-bottom: 2px;
-      box-shadow: 0 1px 4px #0002;
-      gap: 12px;
-    }
-    .info-label {
-      color: #fff;
-      font-weight: 700;
-      font-family: 'Poppins', 'Segoe UI Semibold', 'Arial', sans-serif;
-      text-transform: uppercase;
-      font-size: 1em;
-      letter-spacing: 0.5px;
-    }
-    .info-value {
-      color: #ffe14a;
-      font-weight: 900;
-      font-size: 1em;
-      padding: 2px 16px;
-      border-radius: 8px;
-      background: #181926;
-      border: none;
-      margin-left: 8px;
-      font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
-      letter-spacing: 0.2px;
-      box-shadow: 0 1px 4px #0002;
-    }
-    .info-value.orange {
-      background: #ff6a3d;
-      color: #fff;
-      border: none;
-      font-weight: 900;
-      font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
-      letter-spacing: 0.2px;
-      border-radius: 8px;
-      padding: 2px 16px;
-      margin-left: 8px;
-      box-shadow: 0 1px 4px #0002;
-    }
-    .leaderboard-section {
-      margin-top: 8px;
-      background: #232244;
-      border-radius: 18px;
-      padding: 10px 8px 8px 8px;
-      box-shadow: 0 2px 8px #0003;
-    }
-    .leaderboard-title {
-      color: #a6a8d7;
-      font-size: 1.08rem;
-      font-weight: 900;
-      margin-bottom: 7px;
-      text-align: center;
-      letter-spacing: 0.5px;
-      font-family: 'Poppins', 'Segoe UI Semibold', 'Arial', sans-serif;
-      text-shadow: 0 1px 4px #0006;
-      text-transform: uppercase;
-    }
-    #leaderboard {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .leaderboard-entry {
-      display: flex;
-      align-items: center;
-      background: #23233a;
-      border-radius: 12px;
-      margin-bottom: 4px;
-      padding: 6px 10px;
-      font-size: 1em;
-      font-weight: 700;
-      min-height: 32px;
-      box-shadow: 0 1px 4px #0002;
-    }
-    .leaderboard-entry.gold {
-      background: linear-gradient(90deg, #ffe14a 0%, #ffb800 100%);
-      color: #222;
-      border-radius: 12px;
-    }
-    .leaderboard-entry.silver {
-      background: linear-gradient(90deg, #bfc6e6 0%, #e0e3f7 100%);
-      color: #222;
-      border-radius: 12px;
-    }
-    .leaderboard-entry.bronze {
-      background: linear-gradient(90deg, #ffb86c 0%, #ff9f43 100%);
-      color: #222;
-      border-radius: 12px;
-    }
-    .leaderboard-rank {
-      width: 22px;
-      text-align: center;
-      font-size: 1.15em;
-      margin-right: 8px;
-      font-family: 'Poppins', 'Segoe UI Black', 'Arial Black', Arial, sans-serif;
-      letter-spacing: 0.5px;
-      font-weight: 900;
-    }
-    .leaderboard-avatar {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      margin: 0 7px 0 1px;
-      border: 1.5px solid #444;
-      background: #fff;
-      box-shadow: 0 1px 4px #0002;
-    }
-    .leaderboard-name {
-      flex: 1;
-      margin-left: 2px;
-      font-weight: 900;
-      font-size: 1.01em;
-      font-family: 'Poppins', 'Segoe UI Semibold', 'Arial', sans-serif;
-      letter-spacing: 0.2px;
-      text-shadow: 0 1px 2px #0004;
-      color: #fff;
-    }
-    .leaderboard-coins {
-      font-weight: 900;
-      margin-left: 8px;
-      font-size: 1.01em;
-      color: #ffe14a;
-      font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
-      letter-spacing: 0.2px;
-      background: #232244;
-      border-radius: 6px;
-      padding: 2px 10px;
-      box-shadow: 0 1px 4px #0002;
-    }
-    .participants {
-      color: #a6a8d7;
-      font-size: 0.92rem;
-      margin-top: 4px;
-      text-align: right;
-      font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
-    }
-  </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Overlay Timer</title>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+	<style>
+		body {
+			background: #181a20;
+			font-family: 'Inter', sans-serif;
+			margin: 0;
+			color: #fff;
+		}
+		.overlay-container {
+			max-width: 420px;
+			margin: 0 auto;
+			padding: 24px 0 0 0;
+			display: flex;
+			flex-direction: column;
+			gap: 18px;
+			align-items: center;
+		}
+		.status-card {
+			background: #23243a;
+			border-radius: 16px;
+			box-shadow: 0 2px 16px #0003;
+			padding: 18px 24px;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		.status-label {
+			color: #00ffb0;
+			font-weight: 700;
+			font-size: 1.1em;
+			margin-bottom: 8px;
+		}
+		.timer-remaining {
+			font-size: 2.2em;
+			font-weight: 800;
+			color: #00ffb0;
+			margin: 10px 0 0 0;
+			letter-spacing: 2px;
+			text-shadow: 0 2px 12px #00ffb055;
+		}
+		.badge-row {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			background: #181a20;
+			border-radius: 8px;
+			padding: 8px 14px;
+			font-size: 1.05em;
+			font-weight: 600;
+			margin: 8px 0;
+			width: 100%;
+			justify-content: space-between;
+		}
+		.badge-label {
+			color: #ffd700;
+			font-weight: 700;
+		}
+		.badge-value {
+			color: #fff;
+			font-weight: 700;
+			background: #23243a;
+			border-radius: 6px;
+			padding: 2px 8px;
+		}
+		.snipe-delay {
+			color: #ff7b7b;
+			font-weight: 700;
+			font-size: 1.1em;
+			margin: 0 0 8px 0;
+		}
+		.leaderboard {
+			width: 100%;
+			margin-top: 10px;
+		}
+		.leader-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-radius: 12px;
+			padding: 10px 16px;
+			margin-bottom: 8px;
+			font-size: 1.13em;
+			font-weight: 700;
+			box-shadow: 0 2px 8px #0002;
+			border: 2px solid transparent;
+			transition: background 0.2s, border 0.2s;
+		}
+		.leader-row.gold {
+			background: linear-gradient(90deg, #ffe082 0%, #ffd700 100%);
+			color: #23243a;
+			border-color: #ffd700;
+		}
+		.leader-row.silver {
+			background: linear-gradient(90deg, #e0e0e0 0%, #b0b8d1 100%);
+			color: #23243a;
+			border-color: #b0b8d1;
+		}
+		.leader-row.bronze {
+			background: linear-gradient(90deg, #ffcc80 0%, #ffb347 100%);
+			color: #23243a;
+			border-color: #ffb347;
+		}
+		.leader-row.default {
+			background: #23243a;
+			color: #fff;
+			border-color: #23243a;
+		}
+		.leader-medal {
+			font-size: 1.3em;
+			margin-right: 10px;
+			width: 2em;
+			display: inline-block;
+			text-align: center;
+		}
+		.leader-name {
+			font-weight: 800;
+			margin-right: 8px;
+			letter-spacing: 0.5px;
+		}
+		.leader-coins {
+			color: #23243a;
+			background: #ffd700;
+			border-radius: 8px;
+			padding: 2px 12px;
+			font-weight: 900;
+			margin-left: 8px;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			font-size: 1.08em;
+			box-shadow: 0 1px 4px #ffd70044;
+		}
+		.participants {
+			color: #b0b8d1;
+			font-size: 1em;
+			margin-top: 8px;
+			text-align: right;
+			width: 100%;
+		}
+	</style>
 </head>
 <body>
-  <div class="overlay-container">
-    <div class="timer-section">
-      <div class="timer-label">TIME REMAINING</div>
-      <div class="timer-display" id="timer">1:23</div>
-    </div>
-    <div class="info-bar">
-      <span class="info-label">Minimum:</span>
-      <span class="info-value" id="min-value">no minimum</span>
-    </div>
-    <div class="info-bar">
-      <span class="info-label">Snipe Delay:</span>
-      <span class="info-value orange" id="delay-value">3s</span>
-    </div>
-    <div class="leaderboard-section">
-      <div id="leaderboard"></div>
-      <div class="participants" id="participants"></div>
-    </div>
-  </div>
-  <script>
-    // Example: set minimum and delay dynamically
-    const min = 0; // change to your minimum value
-    const delay = 3; // change to your snipe delay in seconds
-    document.getElementById('min-value').textContent = min > 0 ? min + ' coins' : 'no minimum';
-    document.getElementById('delay-value').textContent = delay + 's';
-
-    // Demo leaderboard data
-    const leaderboardData = [
-      { name: 'Alice', coins: 120, avatar: 'https://ui-avatars.com/api/?name=Alice' },
-      { name: 'Bob', coins: 90, avatar: 'https://ui-avatars.com/api/?name=Bob' },
-      { name: 'Charlie', coins: 60, avatar: 'https://ui-avatars.com/api/?name=Charlie' },
-      { name: 'Daisy', coins: 40, avatar: 'https://ui-avatars.com/api/?name=Daisy' },
-      { name: 'Eve', coins: 20, avatar: 'https://ui-avatars.com/api/?name=Eve' }
-    ];
-
-    function renderLeaderboard(data) {
-      const lb = document.getElementById('leaderboard');
-      lb.innerHTML = '';
-        data.slice(0, 3).forEach((entry, i) => {
-        const div = document.createElement('div');
-        let medal = '';
-        let cls = '';
-        if (i === 0) { medal = '🥇'; cls = 'gold'; }
-        else if (i === 1) { medal = '🥈'; cls = 'silver'; }
-        else if (i === 2) { medal = '🥉'; cls = 'bronze'; }
-        div.className = `leaderboard-entry ${cls}`;
-        div.innerHTML = `
-          <span class="leaderboard-rank">${medal || i+1}</span>
-          <img class="leaderboard-avatar" src="${entry.avatar}" alt="avatar">
-          <span class="leaderboard-name">${entry.name}</span>
-          <span class="leaderboard-coins">${entry.coins} <span style="font-size:1.1em;">🪙</span></span>
-        `;
-        lb.appendChild(div);
-      });
-      document.getElementById('participants').textContent = `Total participants: ${data.length}`;
-    }
-    renderLeaderboard(leaderboardData);
-    // TODO: Replace timer and leaderboardData with live updates from socket.io
-  </script>
+	<div class="overlay-container">
+		<div id="username-bar" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+			<input id="username-input" type="text" placeholder="Enter your TikTok username" style="padding:10px 18px;font-size:1.1em;border-radius:8px;border:none;outline:none;max-width:220px;width:100%;text-align:center;">
+			<button id="connect-btn" class="settings-btn settings-btn-intimidating settings-btn-green" style="padding:8px 18px;font-size:1em;">Connect</button>
+		</div>
+		<div id="overlay-content" style="display:none;width:100%;">
+			<div class="status-card">
+				<div class="status-label">TIME REMAINING</div>
+				<div class="timer-remaining" id="timer">2:00</div>
+				<div class="badge-row">
+					<span class="badge-label">MINIMUM</span>
+					<span class="badge-value" id="minimum">no minimum</span>
+				</div>
+				<div class="badge-row">
+					<span class="badge-label">SNIPE DELAY</span>
+					<span class="badge-value" id="snipe-delay">20s</span>
+				</div>
+			</div>
+			<div class="leaderboard" id="leaderboard">
+				<!-- Leaderboard rows will be injected here -->
+			</div>
+			<div class="participants" id="participants">total participants: 0</div>
+		</div>
+	</div>
+	<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+	<script>
+		let socket = null;
+		let joined = false;
+		document.getElementById('connect-btn').onclick = function() {
+			const username = document.getElementById('username-input').value.trim();
+			if (!username) {
+				alert('Please enter your TikTok username.');
+				return;
+			}
+			if (joined) return;
+			joined = true;
+			document.getElementById('username-bar').style.display = 'none';
+			document.getElementById('overlay-content').style.display = '';
+			socket = io({ transports: ['websocket'] });
+			socket.emit('join', username);
+			// Set initial values
+			document.getElementById('timer').textContent = '2:00';
+			document.getElementById('snipe-delay').textContent = '20s';
+			document.getElementById('minimum').textContent = 'no minimum';
+			document.getElementById('participants').textContent = 'total participants: 0';
+			// Listen for timer updates
+			socket.on('timer-update', (data) => {
+				if (!data) return;
+				const min = Math.floor(data.time / 60);
+				const sec = data.time % 60;
+				document.getElementById('timer').textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+			});
+			// Listen for snipe delay updates
+			socket.on('snipe-delay-update', (data) => {
+				if (typeof data?.snipeDelay === 'number') {
+					document.getElementById('snipe-delay').textContent = data.snipeDelay + 's';
+				}
+			});
+			// Listen for minimum updates
+			socket.on('min-coins-update', (data) => {
+				if (typeof data?.minCoins === 'number') {
+					document.getElementById('minimum').textContent = data.minCoins > 0 ? data.minCoins + ' coins' : 'no minimum';
+				}
+			});
+			// Listen for leaderboard updates
+			socket.on('update', (bids) => {
+				const leaderboard = document.getElementById('leaderboard');
+				leaderboard.innerHTML = '';
+				if (bids && typeof bids === 'object') {
+					const sorted = Object.entries(bids).sort((a, b) => b[1] - a[1]);
+					sorted.forEach(([name, coins], i) => {
+						const row = document.createElement('div');
+						let medal = '';
+						let rowClass = 'default';
+						if (i === 0) { medal = '🥇'; rowClass = 'gold'; }
+						else if (i === 1) { medal = '🥈'; rowClass = 'silver'; }
+						else if (i === 2) { medal = '🥉'; rowClass = 'bronze'; }
+						row.className = 'leader-row ' + rowClass;
+						row.innerHTML = `
+							<span class="leader-medal">${medal}</span>
+							<span class="leader-name">${name}</span>
+							<span class="leader-coins">${coins} <span style='font-size:1.1em;'>🪙</span></span>
+						`;
+						leaderboard.appendChild(row);
+					});
+					document.getElementById('participants').textContent = 'Total participants: ' + sorted.length;
+				} else {
+					document.getElementById('participants').textContent = 'Total participants: 0';
+				}
+			});
+		};
+	</script>
 </body>
+</html>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Overlay Timer</title>
+	<style>
+		body {
+			background: transparent;
+			margin: 0;
+			font-family: 'Inter', Arial, sans-serif;
+			color: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+		}
+		.timer-remaining {
+			font-size: 4em;
+			font-weight: 800;
+			color: #00ffb0;
+			letter-spacing: 2px;
+			text-shadow: 0 2px 12px #00ffb055;
+			background: rgba(24,26,32,0.7);
+			border-radius: 16px;
+			padding: 0.2em 1.2em;
+		}
+	</style>
+</head>
+<body>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+	<style>
+		body {
+			background: #181a20;
+			font-family: 'Inter', sans-serif;
+			margin: 0;
+			color: #fff;
+		}
+		.overlay-container {
+			max-width: 420px;
+			margin: 0 auto;
+			padding: 24px 0 0 0;
+			display: flex;
+			flex-direction: column;
+			gap: 18px;
+			align-items: center;
+		}
+		.status-card {
+			background: #23243a;
+			border-radius: 16px;
+			box-shadow: 0 2px 16px #0003;
+			padding: 18px 24px;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		.status-label {
+			color: #00ffb0;
+			font-weight: 700;
+			font-size: 1.1em;
+			margin-bottom: 8px;
+		}
+		.timer-remaining {
+			font-size: 2.2em;
+			font-weight: 800;
+			color: #00ffb0;
+			margin: 10px 0 0 0;
+			letter-spacing: 2px;
+			text-shadow: 0 2px 12px #00ffb055;
+		}
+		.badge-row {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			background: #181a20;
+			border-radius: 8px;
+			padding: 8px 14px;
+			font-size: 1.05em;
+			font-weight: 600;
+			margin: 8px 0;
+			width: 100%;
+			justify-content: space-between;
+		}
+		.badge-label {
+			color: #ffd700;
+			font-weight: 700;
+		}
+		.badge-value {
+			color: #fff;
+			font-weight: 700;
+			background: #23243a;
+			border-radius: 6px;
+			padding: 2px 8px;
+		}
+		.snipe-delay {
+			color: #ff7b7b;
+			font-weight: 700;
+			font-size: 1.1em;
+			margin: 0 0 8px 0;
+		}
+		.leaderboard {
+			width: 100%;
+			margin-top: 10px;
+		}
+		.leader-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-radius: 12px;
+			padding: 10px 16px;
+			margin-bottom: 8px;
+			font-size: 1.13em;
+			font-weight: 700;
+			box-shadow: 0 2px 8px #0002;
+			border: 2px solid transparent;
+			transition: background 0.2s, border 0.2s;
+		}
+		.leader-row.gold {
+			background: linear-gradient(90deg, #ffe082 0%, #ffd700 100%);
+			color: #23243a;
+			border-color: #ffd700;
+		}
+		.leader-row.silver {
+			background: linear-gradient(90deg, #e0e0e0 0%, #b0b8d1 100%);
+			color: #23243a;
+			border-color: #b0b8d1;
+		}
+		.leader-row.bronze {
+			background: linear-gradient(90deg, #ffcc80 0%, #ffb347 100%);
+			color: #23243a;
+			border-color: #ffb347;
+		}
+		.leader-row.default {
+			background: #23243a;
+			color: #fff;
+			border-color: #23243a;
+		}
+		.leader-medal {
+			font-size: 1.3em;
+			margin-right: 10px;
+			width: 2em;
+			display: inline-block;
+			text-align: center;
+		}
+		.leader-name {
+			font-weight: 800;
+			margin-right: 8px;
+			letter-spacing: 0.5px;
+		}
+		.leader-coins {
+			color: #23243a;
+			background: #ffd700;
+			border-radius: 8px;
+			padding: 2px 12px;
+			font-weight: 900;
+			margin-left: 8px;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			font-size: 1.08em;
+			box-shadow: 0 1px 4px #ffd70044;
+		}
+		.participants {
+			color: #b0b8d1;
+			font-size: 1em;
+			margin-top: 8px;
+			text-align: right;
+			width: 100%;
+		}
+	</style>
+	<div class="overlay-container">
+		<div id="username-bar" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+			<input id="username-input" type="text" placeholder="Enter your TikTok username" style="padding:10px 18px;font-size:1.1em;border-radius:8px;border:none;outline:none;max-width:220px;width:100%;text-align:center;">
+			<button id="connect-btn" class="settings-btn settings-btn-intimidating settings-btn-green" style="padding:8px 18px;font-size:1em;">Connect</button>
+		</div>
+		<div id="overlay-content" style="display:none;width:100%;">
+			<div class="status-card">
+				<div class="status-label">TIME REMAINING</div>
+				<div class="timer-remaining" id="timer">2:00</div>
+				<div class="badge-row">
+					<span class="badge-label">MINIMUM</span>
+					<span class="badge-value" id="minimum">no minimum</span>
+				</div>
+				<div class="badge-row">
+					<span class="badge-label">SNIPE DELAY</span>
+					<span class="badge-value" id="snipe-delay">20s</span>
+				</div>
+			</div>
+			<div class="leaderboard" id="leaderboard">
+				<!-- Leaderboard rows will be injected here -->
+			</div>
+			<div class="participants" id="participants">total participants: 0</div>
+		</div>
+	</div>
+	<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+	<script>
+		let socket = null;
+		let joined = false;
+		document.getElementById('connect-btn').onclick = function() {
+			const username = document.getElementById('username-input').value.trim();
+			if (!username) {
+				alert('Please enter your TikTok username.');
+				return;
+			}
+			if (joined) return;
+			joined = true;
+			document.getElementById('username-bar').style.display = 'none';
+			document.getElementById('overlay-content').style.display = '';
+			socket = io({ transports: ['websocket'] });
+			socket.emit('join', username);
+			// Set initial values
+			document.getElementById('timer').textContent = '2:00';
+			document.getElementById('snipe-delay').textContent = '20s';
+			document.getElementById('minimum').textContent = 'no minimum';
+			document.getElementById('participants').textContent = 'total participants: 0';
+			// Listen for timer updates
+			socket.on('timer-update', (data) => {
+				if (!data) return;
+				const min = Math.floor(data.time / 60);
+				const sec = data.time % 60;
+				document.getElementById('timer').textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+			});
+			// Listen for snipe delay updates
+			socket.on('snipe-delay-update', (data) => {
+				if (typeof data?.snipeDelay === 'number') {
+					document.getElementById('snipe-delay').textContent = data.snipeDelay + 's';
+				}
+			});
+			// Listen for minimum updates
+			socket.on('min-coins-update', (data) => {
+				if (typeof data?.minCoins === 'number') {
+					document.getElementById('minimum').textContent = data.minCoins > 0 ? data.minCoins + ' coins' : 'no minimum';
+				}
+			});
+			// Listen for leaderboard updates
+			socket.on('update', (bids) => {
+				const leaderboard = document.getElementById('leaderboard');
+				leaderboard.innerHTML = '';
+				if (bids && typeof bids === 'object') {
+					const sorted = Object.entries(bids).sort((a, b) => b[1] - a[1]);
+					sorted.forEach(([name, coins], i) => {
+						const row = document.createElement('div');
+						let medal = '';
+						let rowClass = 'default';
+						if (i === 0) { medal = '🥇'; rowClass = 'gold'; }
+						else if (i === 1) { medal = '🥈'; rowClass = 'silver'; }
+						else if (i === 2) { medal = '🥉'; rowClass = 'bronze'; }
+						row.className = 'leader-row ' + rowClass;
+						row.innerHTML = `
+							<span class="leader-medal">${medal}</span>
+							<span class="leader-name">${name}</span>
+							<span class="leader-coins">${coins} <span style='font-size:1.1em;'>🪙</span></span>
+						`;
+						leaderboard.appendChild(row);
+					});
+					document.getElementById('participants').textContent = 'Total participants: ' + sorted.length;
+				} else {
+					document.getElementById('participants').textContent = 'Total participants: 0';
+				}
+			});
+		};
+	</script>
+// This file will be m                                                                                                                                                              oved to public/overlay.html so it is accessible via the web server.
+</body>
+</html>
+
