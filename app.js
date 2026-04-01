@@ -1,4 +1,17 @@
-﻿const express = require("express");
+﻿app.use(express.json());
+
+app.post('/api/generate-overlay-token', (req, res) => {
+  const { username } = req.body;
+  if (!username || typeof username !== 'string') {
+    return res.status(400).json({ error: 'Invalid username' });
+  }
+  // Generate a random token (for demo, just use a random string)
+  const token = Math.random().toString(36).substr(2, 12);
+  // Return the overlay URL (customize as needed)
+  const overlayUrl = `${req.protocol}://${req.get('host')}/overlay.html?token=${token}&username=${encodeURIComponent(username)}`;
+  res.json({ url: overlayUrl, token });
+});
+const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 
