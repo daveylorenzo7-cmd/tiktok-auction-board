@@ -1,15 +1,38 @@
-﻿const activeTokens = new Map();
+﻿app.get("/overlay/:token", (req, res) => {
+  const token = req.params.token;
+
+  if (!activeTokens.has(token)) {
+    return res.send("Invalid or expired link");
+  }
+
+  res.sendFile(path.join(__dirname, "public", "overlay.html"));
+});
+const activeTokens = new Map();
 
 app.get("/generate", (req, res) => {
-  const token = Math.random().toString(36).substring(2, 10);
+  try {
+    const token = Math.random().toString(36).substring(2, 10);
 
-  activeTokens.set(token, {
-    created: Date.now()
-  });
+    activeTokens.set(token, {
+      created: Date.now()
+    });
 
-  res.json({
-    url: `${req.protocol}://${req.get("host")}/overlay/${token}`
-  });
+    const url = req.protocol + "://" + req.get("host") + "/overlay/" + token;
+
+    console.log("Generated token:", token);
+
+    res.json({
+      success: true,
+      url: url
+    });
+
+  } catch (error) {
+    console.error("Generate failed:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error generating URL"
+    });
+  }
 });
 
 
