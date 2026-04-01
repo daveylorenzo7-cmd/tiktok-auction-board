@@ -646,22 +646,29 @@
             this.style.color = '#ffd700';
           });
 
-          // Overlay URL Generator logic (calls Render backend)
+          // Overlay URL Generator logic (POST username, show overlayUrl)
           const urlGenForm = document.getElementById('url-gen-form');
+          const urlGenUsername = document.getElementById('url-gen-username');
           const urlGenResult = document.getElementById('url-gen-result');
           if (urlGenForm) {
             urlGenForm.addEventListener('submit', function(e) {
               e.preventDefault();
               urlGenResult.textContent = 'Generating...';
               document.getElementById('copy-url-btn').style.display = 'none';
+              const username = urlGenUsername.value.trim();
+              if (!username) {
+                urlGenResult.textContent = 'Please enter your TikTok username.';
+                return;
+              }
               fetch('https://tiktok-auction-board-2.onrender.com/api/generate-overlay-token', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username })
               })
                 .then(res => res.json())
                 .then(data => {
-                  if (data.token) {
-                    urlGenResult.innerHTML = `<span style='color:#fff;'>Your overlay token:</span><br><span id='overlay-url' style='font-size:1.08em;color:#00f2ea;'>${data.token}</span><br><span style='color:#b0b8d1;font-size:0.98em;'>Use this token in your overlay URL.</span>`;
+                  if (data.overlayUrl) {
+                    urlGenResult.innerHTML = `<span style='color:#fff;'>Your private overlay URL:</span><br><span id='overlay-url' style='font-size:1.08em;color:#00f2ea;'>${data.overlayUrl}</span><br><span style='color:#b0b8d1;font-size:0.98em;'>Add this as a Web Source in TikTok Studio. <b>Do not share this link!</b></span>`;
                     const copyBtn = document.getElementById('copy-url-btn');
                     copyBtn.style.display = '';
                     copyBtn.onclick = function() {
@@ -671,11 +678,11 @@
                       setTimeout(() => { copyBtn.textContent = 'Copy URL'; }, 1500);
                     };
                   } else {
-                    urlGenResult.textContent = data.error || 'Failed to generate token.';
+                    urlGenResult.textContent = data.error || 'Error generating URL.';
                   }
                 })
                 .catch(err => {
-                  urlGenResult.textContent = 'Error generating token.';
+                  urlGenResult.textContent = 'Error generating URL.';
                   console.error('Generate error:', err);
                 });
             });

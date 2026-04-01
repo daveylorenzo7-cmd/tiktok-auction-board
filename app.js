@@ -14,11 +14,16 @@ const app = express();
 const activeTokens = new Map();
 app.use(express.json());
 
-// POST route to generate a random token
+// POST route to generate a random token with username
 app.post("/api/generate-overlay-token", (req, res) => {
+  const { username } = req.body;
+  if (!username || typeof username !== "string" || !username.trim()) {
+    return res.status(400).json({ error: "Username is required" });
+  }
   const token = Math.random().toString(36).substring(2, 10);
-  activeTokens.set(token, { created: Date.now() });
-  res.json({ token });
+  activeTokens.set(token, { username, created: Date.now() });
+  const overlayUrl = `https://tiktok-auction-board-2.onrender.com/overlay?token=${token}`;
+  res.json({ token, overlayUrl });
 });
 
 // Robust /generate endpoint with logging and error handling
@@ -43,7 +48,16 @@ app.get("/generate", (req, res) => {
   }
 });
 
-// Overlay route with token validation
+// Overlay route with token validation (query param)
+app.get("/overlay", (req, res) => {
+  const token = req.query.token;
+  if (!token || !activeTokens.has(token)) {
+    return res.send("Invalid or expired link");
+  }
+  res.sendFile(path.join(__dirname, "public", "overlay.html"));
+});
+
+// (Optional) Token-based overlay route for backward compatibility
 app.get("/overlay/:token", (req, res) => {
   const token = req.params.token;
   if (!activeTokens.has(token)) {
