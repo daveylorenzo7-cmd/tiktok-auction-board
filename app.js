@@ -1,15 +1,27 @@
-﻿app.use(express.json());
+﻿
+const path = require("path");
+const activeTokens = new Map();
+app.use(express.json());
 
-app.post('/api/generate-overlay-token', (req, res) => {
-  const { username } = req.body;
-  if (!username || typeof username !== 'string') {
-    return res.status(400).json({ error: 'Invalid username' });
+
+// New /generate endpoint for overlay tokens
+app.get("/generate", (req, res) => {
+  const token = Math.random().toString(36).substring(2, 10);
+  activeTokens.set(token, {
+    created: Date.now()
+  });
+  res.json({
+    url: `${req.protocol}://${req.get("host")}/overlay/${token}`
+  });
+});
+
+// Overlay route with token validation
+app.get("/overlay/:token", (req, res) => {
+  const token = req.params.token;
+  if (!activeTokens.has(token)) {
+    return res.send("Invalid or expired link");
   }
-  // Generate a random token (for demo, just use a random string)
-  const token = Math.random().toString(36).substr(2, 12);
-  // Return the overlay URL (customize as needed)
-  const overlayUrl = `${req.protocol}://${req.get('host')}/overlay.html?token=${token}&username=${encodeURIComponent(username)}`;
-  res.json({ overlayUrl });
+  res.sendFile(path.join(__dirname, "public", "overlay.html"));
 });
 const express = require("express");
 const http = require("http");
