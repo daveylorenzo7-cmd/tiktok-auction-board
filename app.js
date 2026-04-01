@@ -7,53 +7,29 @@
 
   res.sendFile(path.join(__dirname, "public", "overlay.html"));
 });
+const path = require("path");
 const activeTokens = new Map();
+app.use(express.json());
 
+// Robust /generate endpoint with logging and error handling
 app.get("/generate", (req, res) => {
   try {
     const token = Math.random().toString(36).substring(2, 10);
-
     activeTokens.set(token, {
       created: Date.now()
     });
-
     const url = req.protocol + "://" + req.get("host") + "/overlay/" + token;
-
     console.log("Generated token:", token);
-
     res.json({
       success: true,
       url: url
     });
-
   } catch (error) {
     console.error("Generate failed:", error);
     res.status(500).json({
       success: false,
       error: "Error generating URL"
     });
-  }
-});
-
-
-const path = require("path");
-const activeTokens = new Map();
-app.use(express.json());
-
-
-// New /generate endpoint for overlay tokens
-
-app.get("/generate", (req, res) => {
-  try {
-    const token = Math.random().toString(36).substring(2, 10);
-    activeTokens.set(token, {
-      created: Date.now()
-    });
-    const url = `${req.protocol}://${req.get("host")}/overlay/${token}`;
-    res.json({ url });
-  } catch (error) {
-    console.error("Generate error:", error);
-    res.status(500).json({ error: "Failed to generate URL" });
   }
 });
 
