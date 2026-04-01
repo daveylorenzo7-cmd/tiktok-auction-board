@@ -1,63 +1,26 @@
 ﻿const express = require('express');
 const app = express();
-const path = require('path');
-const http = require('http').createServer(app);
-const socketIo = require('socket.io');
-const io = socketIo(http, {
-  pingInterval: 10000,
-  pingTimeout: 5000,
-  transports: ['websocket', 'polling']
+
+app.use(express.json());
+
+// Health check GET route
+app.get('/api/generate-overlay-token', (req, res) => {
+  res.json({ message: "API is working" });
 });
-const { WebcastPushConnection } = require('tiktok-live-connector');
 
+// Token generator POST route
+app.post('/api/generate-overlay-token', (req, res) => {
+  const token = Math.random().toString(36).substring(2, 10);
+  res.json({
+    token,
+    overlayUrl: `https://tiktok-auction-board-2.onrender.com/overlay?token=${token}`
+  });
+});
 
-// Store TikTok sessions: { username: { connection, overlayUrl } }
-const tiktokSessions = {};
-
-// API endpoint to generate overlay URL and start TikTok connection
-app.post('/api/generate-url', async (req, res) => {
-  const { username } = req.body;
-  if (!username || typeof username !== 'string') {
-    return res.status(400).json({ error: 'Invalid username' });
-  }
-  const cleanUsername = username.trim().replace(/^@/, '');
-  // Always use https and the current host for overlay URLs
-  const host = req.get('host');
-  const overlayUrl = `https://${host}/overlay?username=${encodeURIComponent(cleanUsername)}`;
-  if (!tiktokSessions[cleanUsername]) {
-    console.log(`[TikTok] Connecting to TikTok for @${cleanUsername}`);
-    const tiktokConnection = new WebcastPushConnection(cleanUsername);
-    tiktokSessions[cleanUsername] = { connection: tiktokConnection, overlayUrl };
-    // Event listeners
-    tiktokConnection.on('connect', () => {
-      console.log(`[TikTok] Connected successfully for @${cleanUsername}`);
-    });
-    tiktokConnection.on('gift', (data) => {
-      console.log(`[TikTok] Gift received for @${cleanUsername}:`, data);
-      // TODO: Update leaderboard and emit via Socket.io
-    });
-    tiktokConnection.on('error', (err) => {
-      console.error(`[TikTok] Error for @${cleanUsername}:`, err);
-    connection.on('like', (data) => {
-      console.log(`👍 [${roomUsername}] Like received:`, data);
-    });
-
-    connection.on('member', (data) => {
-      console.log(`[${roomUsername}] Member joined:`, data.nickname || data);
-    });
-
-    connection.on('error', (err) => {
-      console.error(`❌ [${roomUsername}] TikTok Live error:`, err);
-      io.to(roomUsername).emit('tiktok-error', { message: err.message || 'Unknown TikTok error' });
-    });
-
-    connection.on('disconnected', () => {
-      console.log(`🔌 [${roomUsername}] Disconnected from TikTok Live`);
-      io.to(roomUsername).emit('tiktok-disconnected');
-    });
-
-    return { success: true, username };
-  } catch (error) {
+// Start server
+app.listen(process.env.PORT || 3000, () => {
+  console.log('Server running');
+});
     console.error(`❌ Error setting up TikTok for ${roomUsername}:`, error.message);
     emitTikTokStatus(roomUsername, '⚠️', `tikstream: Setup error: ${error.message}`);
     return { success: false, message: error.message };
@@ -158,6 +121,27 @@ io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
   socket.on('join', (username) => {
+  const express = require('express');
+  const app = express();
+
+  app.use(express.static('public'));
+  app.use(express.json());
+
+  app.get('/api/generate-overlay-token', (req, res) => {
+    res.json({ message: "API is working" });
+  });
+
+  app.post('/api/generate-overlay-token', (req, res) => {
+    const token = Math.random().toString(36).substring(2, 10);
+    res.json({
+      token,
+      overlayUrl: `https://tiktok-auction-board-2.onrender.com/overlay?token=${token}`
+    });
+  });
+
+  app.listen(process.env.PORT || 3000, () => {
+    console.log('Server running');
+  });
     if (!username) return;
     const normalizedUsername = normalizeTikTokUsername(username);
     if (!normalizedUsername) return;
