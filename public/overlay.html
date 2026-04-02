@@ -222,6 +222,7 @@
 
     socket.on('connect', () => {
       console.log('CONNECTED TO SERVER');
+      socket.emit('join-auction');
     });
 
     socket.on("update", (data) => {
