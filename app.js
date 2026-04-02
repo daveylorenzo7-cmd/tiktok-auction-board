@@ -1,4 +1,9 @@
-﻿io.on('connection', (socket) => {
+﻿const express = require('express');
+const app = express();
+
+app.use(express.static('public'));
+
+io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
   socket.on('join-auction', (token) => {

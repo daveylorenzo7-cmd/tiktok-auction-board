@@ -44,43 +44,41 @@
 <body>
   <div id="players"></div>
 
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-  <script>
-    console.log("SCRIPT IS RUNNING");
+	<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+	<script>
+		console.log("overlay running");
 
-    // Extract token from URL
-    const pathParts = window.location.pathname.split('/');
-    const token = pathParts[pathParts.length - 1];
+		// Extract token from URL
+		const pathParts = window.location.pathname.split('/');
+		const token = pathParts[pathParts.length - 1];
 
-    // Connect to backend
-    const socket = io("https://tiktok-auction-board-1.onrender.com", {
-      transports: ["websocket"]
-    });
+		// Connect to backend
+		const socket = io("https://tiktok-auction-board-1.onrender.com", {
+			transports: ["websocket"]
+		});
 
-    socket.on("connect", () => {
-      console.log("Connected:", token);
-      socket.emit("join-auction", token);
-    });
+		socket.on("connect", () => {
+			console.log("Connected:", token);
+			socket.emit("join-auction", token);
+		});
 
-    // Listen for updates
-    socket.on("update", (data) => {
-      console.log("LIVE DATA:", data);
-
-      // CLEAR old UI
-      const container = document.getElementById("players");
-      if (container) container.innerHTML = "";
-
-      // REBUILD UI from real data
-      if (data.players) {
-        data.players.forEach(player => {
-          const div = document.createElement("div");
-          div.className = "player-row";
-          div.innerText = player.name + " - " + player.score;
-          container.appendChild(div);
-        });
-      }
-    });
-  </script>
+		// Listen for updates
+		socket.on("update", (data) => {
+			console.log("UPDATE:", data);
+			// CLEAR old UI
+			const container = document.getElementById("players");
+			if (container) container.innerHTML = "";
+			// REBUILD UI from real data
+			if (data.bidders) {
+				data.bidders.forEach(player => {
+					const div = document.createElement("div");
+					div.className = "player-row";
+					div.innerText = player.name + " - " + player.coins;
+					container.appendChild(div);
+				});
+			}
+		});
+	</script>
 </body>
 </html>
 	<meta charset="UTF-8">
