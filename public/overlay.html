@@ -45,12 +45,21 @@
       font-family: 'Poppins', 'Segoe UI Semibold', 'Arial', sans-serif;
     }
     .timer-display {
-      font-size: 2.2em;
+      font-size: 2.7em;
       font-weight: 900;
-      color: #2fffad;
-      letter-spacing: 1.5px;
-      text-shadow: 0 1px 12px #00ffb055;
+      color: #00ffd0;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 18px #00ffd055, 0 0px 2px #fff8;
       font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #232244 60%, #00ffd0 100%);
+      padding: 8px 0 6px 0;
+      margin: 0 0 2px 0;
+      border: 2px solid #00ffd0;
+      width: 120px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 2px 16px #00ffd033;
     }
     .info-bar {
       display: flex;
@@ -87,16 +96,18 @@
       box-shadow: 0 1px 4px #0002;
     }
     .info-value.orange {
-      background: #ff6a3d;
-      color: #fff;
-      border: none;
+      background: #222c;
+      color: #00ffd0;
+      border: 2px solid #00ffd0;
       font-weight: 900;
       font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
       letter-spacing: 0.2px;
       border-radius: 8px;
       padding: 2px 16px;
       margin-left: 8px;
-      box-shadow: 0 1px 4px #0002;
+      box-shadow: 0 1px 4px #00ffd033;
+      font-size: 1.1em;
+      text-shadow: 0 1px 8px #00ffd055;
     }
     .leaderboard-section {
       margin-top: 8px;
@@ -127,11 +138,30 @@
       background: #23233a;
       border-radius: 12px;
       margin-bottom: 4px;
-      padding: 6px 10px;
-      font-size: 1em;
+      padding: 8px 14px;
+      font-size: 1.13em;
       font-weight: 700;
-      min-height: 32px;
-      box-shadow: 0 1px 4px #0002;
+      min-height: 38px;
+      box-shadow: 0 2px 8px #0003;
+      transition: background 0.2s, color 0.2s;
+    }
+    .leaderboard-entry.gold {
+      background: linear-gradient(90deg, #ffe14a 0%, #fff6b0 100%);
+      color: #222;
+      border: 2.5px solid #ffd700;
+      font-size: 1.18em;
+    }
+    .leaderboard-entry.silver {
+      background: linear-gradient(90deg, #bfc6e6 0%, #e0e3f7 100%);
+      color: #222;
+      border: 2.5px solid #bfc6e6;
+      font-size: 1.15em;
+    }
+    .leaderboard-entry.bronze {
+      background: linear-gradient(90deg, #ffb86c 0%, #ff9f43 100%);
+      color: #222;
+      border: 2.5px solid #ffb86c;
+      font-size: 1.13em;
     }
     .leaderboard-entry.gold {
       background: linear-gradient(90deg, #ffe14a 0%, #ffb800 100%);
@@ -199,17 +229,17 @@
 </head>
 <body>
   <div class="overlay-container">
-    <div class="timer-section">
-      <div class="timer-label">TIME REMAINING</div>
-      <div class="timer-display" id="timer">1:23</div>
-    </div>
+      <div class="timer-section">
+        <div class="timer-label">TIME REMAINING</div>
+        <div class="timer-display" id="timer">2:00</div>
+      </div>
     <div class="info-bar">
       <span class="info-label">Minimum:</span>
       <span class="info-value" id="min-value">no minimum</span>
     </div>
     <div class="info-bar">
       <span class="info-label">Snipe Delay:</span>
-      <span class="info-value orange" id="delay-value">3s</span>
+      <span class="info-value orange" id="delay-value">20s</span>
     </div>
     <div class="leaderboard-section">
       <div id="leaderboard"></div>
@@ -221,13 +251,53 @@
 <script>
 const socket = io();
 
+// Timer logic
+let timerSeconds = 120;
+const timerDisplay = document.getElementById('timer');
+let timerInterval = null;
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timerSeconds = 120;
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    updateTimerDisplay();
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerDisplay.textContent = "0:00";
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const min = Math.floor(timerSeconds / 60);
+  const sec = timerSeconds % 60;
+  timerDisplay.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+}
+
 function renderLeaderboard(data) {
   const container = document.getElementById("leaderboard");
   container.innerHTML = "";
-
+  const medals = [
+    { medal: "🥇", cls: "gold" },
+    { medal: "🥈", cls: "silver" },
+    { medal: "🥉", cls: "bronze" }
+  ];
   data.forEach((user, index) => {
     const div = document.createElement("div");
-    div.innerText = `${index + 1}. ${user.name} - ${user.coins}`;
+    let medal = "";
+    let cls = "";
+    if (index < 3) {
+      medal = medals[index].medal;
+      cls = medals[index].cls;
+    }
+    div.className = `leaderboard-entry${cls ? ' ' + cls : ''}`;
+    div.innerHTML = `
+      <span class="leaderboard-rank">${medal || index + 1}</span>
+      <span class="leaderboard-name">${user.name}</span>
+      <span class="leaderboard-coins">${user.coins} <span style="font-size:1.1em;">🪙</span></span>
+    `;
     container.appendChild(div);
   });
 }
@@ -235,6 +305,7 @@ function renderLeaderboard(data) {
 socket.on("connect", () => {
   console.log("CONNECTED");
   socket.emit("join-auction");
+  startTimer();
 });
 
 socket.on("update", (data) => {
