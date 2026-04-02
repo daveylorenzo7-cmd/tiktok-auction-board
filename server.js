@@ -1,6 +1,16 @@
 ﻿const express = require('express');
 const app = express();
 
+app.get('/test', (req, res) => {
+  res.send("server works");
+});
+
+app.listen(process.env.PORT || 3000, () => {
+  console.log('Server running');
+});
+const express = require('express');
+const app = express();
+
 app.use(express.json());
 
 // Health check GET route
