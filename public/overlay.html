@@ -289,32 +289,33 @@
 	<style>
 		body {
 			background: transparent;
-			margin: 0;
-			font-family: 'Inter', Arial, sans-serif;
 			<script>
-			// Extract token from URL path
-			const pathParts = window.location.pathname.split('/');
-			const token = pathParts[pathParts.length - 1];
+			window.addEventListener("load", () => {
+				const pathParts = window.location.pathname.split('/');
+				const token = pathParts[pathParts.length - 1];
 
-			console.log("Fetching auction for token:", token);
+				console.log("Fetching auction for token:", token);
 
-			// On page load, fetch auction data from backend
-			fetch(`https://tiktok-auction-board-1.onrender.com/api/auction/${token}`)
-				.then(res => res.json())
-				.then(data => {
-					// Use the returned data to update the overlay
-					if (data.item && document.getElementById('item')) {
-						document.getElementById('item').textContent = data.item;
-					}
-					if (typeof data.highestBid !== 'undefined' && document.getElementById('highestBid')) {
-						document.getElementById('highestBid').textContent = data.highestBid;
-					}
-					if (data.highestBidder && document.getElementById('highestBidder')) {
-						document.getElementById('highestBidder').textContent = data.highestBidder;
-					}
-					console.log("Auction data:", data);
-				})
-				.catch(err => {
+				fetch("https://tiktok-auction-board-1.onrender.com/api/auction/" + token)
+					.then(res => res.json())
+					.then(data => {
+						console.log("Auction data:", data);
+
+						// Update UI with real data
+						if (data.item && document.getElementById('item')) {
+							document.getElementById('item').textContent = data.item;
+						}
+						if (typeof data.highestBid !== 'undefined' && document.getElementById('highestBid')) {
+							document.getElementById('highestBid').textContent = data.highestBid;
+						}
+						if (data.highestBidder && document.getElementById('highestBidder')) {
+							document.getElementById('highestBidder').textContent = data.highestBidder;
+						}
+					})
+					.catch(err => {
+						console.error("Fetch error:", err);
+					});
+			});
 					console.error("Error fetching auction data:", err);
 				});
 			align-items: center;
