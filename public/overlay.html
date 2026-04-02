@@ -217,47 +217,29 @@
     </div>
   </div>
 <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
 
-    socket.on('connect', () => {
-      console.log('CONNECTED TO SERVER');
-      socket.emit('join-auction');
-    });
+<script>
+const socket = io();
 
-    socket.on("update", (data) => {
-      console.log("UPDATE RECEIVED", data);
-      renderLeaderboard(data);
-    });
-    // Example: set minimum and delay dynamically
-    const min = 0; // change to your minimum value
-    const delay = 3; // change to your snipe delay in seconds
-    document.getElementById('min-value').textContent = min > 0 ? min + ' coins' : 'no minimum';
-    document.getElementById('delay-value').textContent = delay + 's';
+function renderLeaderboard(data) {
+  const container = document.getElementById("leaderboard");
+  container.innerHTML = "";
 
+  data.forEach((user, index) => {
+    const div = document.createElement("div");
+    div.innerText = `${index + 1}. ${user.name} - ${user.coins}`;
+    container.appendChild(div);
+  });
+}
 
-    function renderLeaderboard(data) {
-      const lb = document.getElementById('leaderboard');
-      lb.innerHTML = '';
-        data.slice(0, 3).forEach((entry, i) => {
-        const div = document.createElement('div');
-        let medal = '';
-        let cls = '';
-        if (i === 0) { medal = '🥇'; cls = 'gold'; }
-        else if (i === 1) { medal = '🥈'; cls = 'silver'; }
-        else if (i === 2) { medal = '🥉'; cls = 'bronze'; }
-        div.className = `leaderboard-entry ${cls}`;
-        div.innerHTML = `
-          <span class="leaderboard-rank">${medal || i+1}</span>
-          <img class="leaderboard-avatar" src="${entry.avatar}" alt="avatar">
-          <span class="leaderboard-name">${entry.name}</span>
-          <span class="leaderboard-coins">${entry.coins} <span style="font-size:1.1em;">🪙</span></span>
-        `;
-        lb.appendChild(div);
-      });
-      document.getElementById('participants').textContent = `Total participants: ${data.length}`;
-    }
-    renderLeaderboard([]);
-    // TODO: Replace timer with live updates from socket.io
-  </script>
+socket.on("connect", () => {
+  console.log("CONNECTED");
+  socket.emit("join-auction");
+});
+
+socket.on("update", (data) => {
+  console.log("UPDATE", data);
+  renderLeaderboard(data);
+});
+</script>
 </body>
