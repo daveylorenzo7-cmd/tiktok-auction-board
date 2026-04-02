@@ -10,6 +10,17 @@ app.get('/overlay/:token', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'overlay.html'));
 });
 
+// New auction info route
+app.get('/api/auction/:token', (req, res) => {
+  const token = req.params.token;
+  res.json({
+    token: token,
+    item: "Test Item",
+    highestBid: 100,
+    highestBidder: "Test User"
+  });
+});
+
 app.listen(process.env.PORT || 3000, () => {
   console.log('Server running');
 });
