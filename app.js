@@ -3,7 +3,9 @@ const app = express();
 const path = require("path");
 
 app.use(express.static('public'));
-
+app.get('/overlay/:token', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'overlay.html'));
+});
 app.get('/overlay/:token', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'overlay.html'));
 });
