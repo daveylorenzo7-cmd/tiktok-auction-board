@@ -1,8 +1,13 @@
 ﻿const express = require('express');
+const path = require('path');
 const app = express();
 
 app.get('/test', (req, res) => {
   res.send("server works");
+});
+
+app.get('/overlay/:token', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'overlay.html'));
 });
 
 app.listen(process.env.PORT || 3000, () => {
