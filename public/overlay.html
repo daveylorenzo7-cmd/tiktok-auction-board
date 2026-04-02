@@ -1,288 +1,86 @@
 
-<!DOCTYPE html>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>TikTok Auction Overlay</title>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-	<style>
-		body {
-			background: linear-gradient(135deg, #181a20 0%, #23243a 100%);
-			font-family: 'Inter', sans-serif;
-			<h1 style="color:red;">TEST</h1>
-			text-shadow: 0 2px 12px #00ffb055;
-		}
-		.auction-timer {
-			font-size: 2.8em;
-			font-weight: 900;
-			color: #ffd700;
-			background: #23243a;
-			border-radius: 16px;
-			padding: 0.2em 1.2em;
-			margin-bottom: 8px;
-			box-shadow: 0 2px 12px #ffd70033;
-			letter-spacing: 2px;
-		}
-		.auction-status {
-			display: flex;
-			gap: 18px;
-			width: 100%;
-			justify-content: space-between;
-			margin-bottom: 8px;
-		}
-		.status-block {
-			background: #181a20;
-			border-radius: 10px;
-			padding: 8px 18px;
-			font-size: 1.08em;
-			font-weight: 700;
-			color: #fff;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			min-width: 90px;
-		}
-		.status-label {
-			color: #00ffb0;
-			font-size: 0.95em;
-			font-weight: 700;
-			margin-bottom: 2px;
-			letter-spacing: 0.5px;
-		}
-		.status-value {
-			font-size: 1.1em;
-			font-weight: 800;
-		}
-		.leaderboard {
-			width: 100%;
-			margin-top: 10px;
-			background: #23243a;
-			border-radius: 14px;
-			padding: 12px 10px 8px 10px;
-			box-shadow: 0 2px 8px #0002;
-		}
-		.leader-row {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			border-radius: 10px;
-			padding: 8px 12px;
-			margin-bottom: 7px;
-			font-size: 1.13em;
-			font-weight: 700;
-			background: #181a20;
-			color: #fff;
-			border: 2px solid transparent;
-			transition: background 0.2s, border 0.2s;
-		}
-		.leader-row.gold {
-			background: linear-gradient(90deg, #ffe082 0%, #ffd700 100%);
-			color: #23243a;
-			border-color: #ffd700;
-		}
-		.leader-row.silver {
-			background: linear-gradient(90deg, #e0e0e0 0%, #b0b8d1 100%);
-			color: #23243a;
-			border-color: #b0b8d1;
-		}
-		.leader-row.bronze {
-			background: linear-gradient(90deg, #ffcc80 0%, #ffb347 100%);
-			color: #23243a;
-			border-color: #ffb347;
-		}
-		.leader-medal {
-			font-size: 1.3em;
-			margin-right: 10px;
-			width: 2em;
-			display: inline-block;
-			text-align: center;
-		}
-		.leader-name {
-			font-weight: 800;
-			margin-right: 8px;
-			letter-spacing: 0.5px;
-		}
-		.leader-coins {
-			color: #23243a;
-			background: #ffd700;
-			border-radius: 8px;
-			padding: 2px 12px;
-			font-weight: 900;
-			margin-left: 8px;
-			display: flex;
-			align-items: center;
-			gap: 4px;
-			font-size: 1.08em;
-			box-shadow: 0 1px 4px #ffd70044;
-		}
-		.participants {
-			color: #b0b8d1;
-			font-size: 1em;
-			margin-top: 8px;
-			text-align: right;
-			width: 100%;
-		}
-		.watermark {
-			position: absolute;
-			bottom: 10px;
-			right: 18px;
-			font-size: 0.95em;
-			color: #00ffb0aa;
-			opacity: 0.7;
-			pointer-events: none;
-			user-select: none;
-		}
-	</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Auction Overlay</title>
+  <style>
+    body {
+      background: #181a20;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+    #players {
+      margin-top: 40px;
+      width: 100%;
+      max-width: 400px;
+      background: #23243a;
+      border-radius: 12px;
+      padding: 18px 12px;
+      box-shadow: 0 2px 12px #00ffb055;
+    }
+    .player-row {
+      padding: 10px 0;
+      border-bottom: 1px solid #333;
+      font-size: 1.2em;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+    }
+    .player-row:last-child {
+      border-bottom: none;
+    }
+  </style>
 </head>
 <body>
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-<script>
-// Extract token from URL path
-const pathParts = window.location.pathname.split('/');
-const token = pathParts[pathParts.length - 1];
-console.log("Overlay script loaded. Token:", token);
+  <div id="players"></div>
 
-// Connect to your backend server via Socket.IO
-const socket = io("https://tiktok-auction-board-1.onrender.com", {
-	transports: ["websocket"]
-});
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script>
+    console.log("SCRIPT IS RUNNING");
 
-// Join the auction room for this token
-socket.on("connect", () => {
-	console.log("Socket connected, joining auction room:", token);
-	socket.emit("join-auction", token);
-});
+    // Extract token from URL
+    const pathParts = window.location.pathname.split('/');
+    const token = pathParts[pathParts.length - 1];
 
-// Listen for live auction updates
-socket.on("auction-update", (data) => {
-	console.log("Live auction update:", data);
-	updateAuctionDisplay(data);
-});
+    // Connect to backend
+    const socket = io("https://tiktok-auction-board-1.onrender.com", {
+      transports: ["websocket"]
+    });
 
-// Listen for live timer updates
-socket.on("timer-update", (timer) => {
-	if (document.getElementById("timer")) {
-		document.getElementById("timer").textContent = timer;
-	}
-});
+    socket.on("connect", () => {
+      console.log("Connected:", token);
+      socket.emit("join-auction", token);
+    });
 
-// Dynamically update leaderboard and auction UI
-function updateAuctionDisplay(data) {
-	// Timer
-	if (data.timer !== undefined && document.getElementById("timer")) {
-		document.getElementById("timer").textContent = data.timer;
-	}
-	// Minimum
-	if (data.minimum !== undefined && document.getElementById("minimum")) {
-		document.getElementById("minimum").textContent = data.minimum;
-	}
-	// Snipe Delay
-	if (data.snipeDelay !== undefined && document.getElementById("snipe-delay")) {
-		document.getElementById("snipe-delay").textContent = data.snipeDelay;
-	}
-	// Leaderboard
-	if (data.leaderboard && Array.isArray(data.leaderboard)) {
-		const leaderboard = document.getElementById("leaderboard");
-		leaderboard.innerHTML = "";
-		data.leaderboard.forEach((entry, i) => {
-			const row = document.createElement("div");
-			let medal = "";
-			let rowClass = "";
-			if (i === 0) { medal = "🥇"; rowClass = "gold"; }
-			else if (i === 1) { medal = "🥈"; rowClass = "silver"; }
-			else if (i === 2) { medal = "🥉"; rowClass = "bronze"; }
-			row.className = "leader-row " + rowClass;
-			row.innerHTML = `
-				<span class="leader-medal">${medal}</span>
-				<span class="leader-name">${entry.name}</span>
-				<span class="leader-coins">${entry.coins} <span style='font-size:1.1em;'>🪙</span></span>
-			`;
-			leaderboard.appendChild(row);
-		});
-		if (document.getElementById("participants")) {
-			document.getElementById("participants").textContent = "Total participants: " + data.leaderboard.length;
-		}
-	}
-}
-</script>
-	<div class="overlay-main">
-		<div class="overlay-title">TikTok Auction Live</div>
-		<div class="auction-timer" id="timer">2:00</div>
-		<div class="auction-status">
-			<div class="status-block">
-				<div class="status-label">MINIMUM</div>
-				<div class="status-value" id="minimum">no minimum</div>
-			</div>
-			<div class="status-block">
-				<div class="status-label">SNIPE DELAY</div>
-				<div class="status-value" id="snipe-delay">20s</div>
-			</div>
-		</div>
-		<div class="leaderboard" id="leaderboard">
-			<!-- Leaderboard rows will be injected here -->
-		</div>
-		<div class="participants" id="participants">Total participants: 0</div>
-		<div class="watermark">Powered by TikTok Overlay</div>
-	</div>
-	<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-	<script>
-		// Parse username from URL (for random overlay URLs)
-		function getUsernameFromURL() {
-			const params = new URLSearchParams(window.location.search);
-			return params.get('username') || '';
-		}
-		const socket = io();
-		var username = getUsernameFromURL();
-		if (!username) {
-			document.getElementById('timer').textContent = 'No username';
-			document.getElementById('minimum').textContent = '-';
-			document.getElementById('snipe-delay').textContent = '-';
-			document.getElementById('participants').textContent = 'No participants';
-		} else {
-			socket.emit('join', username);
-		}
+    // Listen for updates
+    socket.on("update", (data) => {
+      console.log("LIVE DATA:", data);
 
-		// Listen for auction updates from dashboard
-		socket.on('auction-update', (data) => {
-			updateAuctionDisplay(data);
-		});
+      // CLEAR old UI
+      const container = document.getElementById("players");
+      if (container) container.innerHTML = "";
 
-		// Example updateAuctionDisplay implementation (customize as needed)
-		function updateAuctionDisplay(data) {
-			if (!data) return;
-			if (data.timer !== undefined) {
-				document.getElementById('timer').textContent = data.timer;
-			}
-			if (data.minimum !== undefined) {
-				document.getElementById('minimum').textContent = data.minimum;
-			}
-			if (data.snipeDelay !== undefined) {
-				document.getElementById('snipe-delay').textContent = data.snipeDelay;
-			}
-			if (data.leaderboard && Array.isArray(data.leaderboard)) {
-				const leaderboard = document.getElementById('leaderboard');
-				leaderboard.innerHTML = '';
-				data.leaderboard.forEach((entry, i) => {
-					const row = document.createElement('div');
-					let medal = '';
-					let rowClass = '';
-					if (i === 0) { medal = '🥇'; rowClass = 'gold'; }
-					else if (i === 1) { medal = '🥈'; rowClass = 'silver'; }
-					else if (i === 2) { medal = '🥉'; rowClass = 'bronze'; }
-					row.className = 'leader-row ' + rowClass;
-					row.innerHTML = `
-						<span class="leader-medal">${medal}</span>
-						<span class="leader-name">${entry.name}</span>
-						<span class="leader-coins">${entry.coins} <span style='font-size:1.1em;'>🪙</span></span>
-					`;
-					leaderboard.appendChild(row);
-				});
-				document.getElementById('participants').textContent = 'Total participants: ' + data.leaderboard.length;
-			}
-		}
-	</script>
+      // REBUILD UI from real data
+      if (data.players) {
+        data.players.forEach(player => {
+          const div = document.createElement("div");
+          div.className = "player-row";
+          div.innerText = player.name + " - " + player.score;
+          container.appendChild(div);
+        });
+      }
+    });
+  </script>
 </body>
 </html>
 	<meta charset="UTF-8">
