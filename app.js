@@ -15,21 +15,17 @@ app.get('/overlay/:token', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
+  console.log("User connected");
 
-  socket.on('join-auction', (token) => {
-    console.log('Joined auction:', token);
+  socket.on("join-auction", () => {
+    console.log("joined auction");
 
     setInterval(() => {
-      socket.emit('update', {
-        timer: Math.floor(Math.random() * 120),
-        minimum: 0,
-        snipeDelay: 3,
-        bidders: [
-          { name: "User1", coins: Math.floor(Math.random() * 200) },
-          { name: "User2", coins: Math.floor(Math.random() * 150) }
-        ]
-      });
+      socket.emit("update", [
+        { name: "Alice", coins: Math.floor(Math.random() * 200) },
+        { name: "Bob", coins: Math.floor(Math.random() * 200) },
+        { name: "Charlie", coins: Math.floor(Math.random() * 200) }
+      ]);
     }, 2000);
   });
 });
