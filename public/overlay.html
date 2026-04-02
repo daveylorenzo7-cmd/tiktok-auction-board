@@ -137,47 +137,76 @@
 	</style>
 </head>
 <body>
-	<script>
-	console.log("Overlay script loaded");
-	const pathParts = window.location.pathname.split('/');
-	const token = pathParts[pathParts.length - 1];
-	console.log("Token:", token);
-	</script>
-	<script>
-	// Extract token from URL path
-	const pathParts = window.location.pathname.split('/');
-	const token = pathParts[pathParts.length - 1];
-	console.log("Token:", token);
-	// Display token on screen for testing
-	const tokenDiv = document.createElement('div');
-	tokenDiv.textContent = "Token: " + token;
-	tokenDiv.style.position = "fixed";
-	tokenDiv.style.bottom = "10px";
-	tokenDiv.style.right = "10px";
-	tokenDiv.style.background = "rgba(0,0,0,0.7)";
-	tokenDiv.style.color = "#fff";
-	tokenDiv.style.fontSize = "0.9em";
-	tokenDiv.style.padding = "4px 10px";
-	tokenDiv.style.borderRadius = "8px";
-	tokenDiv.style.zIndex = "9999";
-	document.body.appendChild(tokenDiv);
+	 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+	 <script>
+	 // Extract token from URL path
+	 const pathParts = window.location.pathname.split('/');
+	 const token = pathParts[pathParts.length - 1];
+	 console.log("Overlay script loaded. Token:", token);
 
-	// Debugging: log fetch URL and errors
-	const fetchUrl = `/api/some-endpoint?token=${encodeURIComponent(token)}`;
-	console.log("Fetch URL:", fetchUrl);
+	 // Connect to your backend server via Socket.IO
+	 const socket = io("https://tiktok-auction-board-1.onrender.com", {
+		 transports: ["websocket"]
+	 });
 
-	fetch(fetchUrl)
-		.then(res => res.json())
-		.then(data => {
-			// ...your existing logic...
-		})
-		.catch(err => {
-			console.error("Fetch error:", err);
-			if (err && err.stack) {
-				console.error("Error stack:", err.stack);
-			}
-		});
-	</script>
+	 // Join the auction room for this token
+	 socket.on("connect", () => {
+		 console.log("Socket connected, joining auction room:", token);
+		 socket.emit("join-auction", token);
+	 });
+
+	 // Listen for live auction updates
+	 socket.on("auction-update", (data) => {
+		 console.log("Live auction update:", data);
+		 updateAuctionDisplay(data);
+	 });
+
+	 // Listen for live timer updates
+	 socket.on("timer-update", (timer) => {
+		 if (document.getElementById("timer")) {
+			 document.getElementById("timer").textContent = timer;
+		 }
+	 });
+
+	 // Dynamically update leaderboard and auction UI
+	 function updateAuctionDisplay(data) {
+		 // Timer
+		 if (data.timer !== undefined && document.getElementById("timer")) {
+			 document.getElementById("timer").textContent = data.timer;
+		 }
+		 // Minimum
+		 if (data.minimum !== undefined && document.getElementById("minimum")) {
+			 document.getElementById("minimum").textContent = data.minimum;
+		 }
+		 // Snipe Delay
+		 if (data.snipeDelay !== undefined && document.getElementById("snipe-delay")) {
+			 document.getElementById("snipe-delay").textContent = data.snipeDelay;
+		 }
+		 // Leaderboard
+		 if (data.leaderboard && Array.isArray(data.leaderboard)) {
+			 const leaderboard = document.getElementById("leaderboard");
+			 leaderboard.innerHTML = "";
+			 data.leaderboard.forEach((entry, i) => {
+				 const row = document.createElement("div");
+				 let medal = "";
+				 let rowClass = "";
+				 if (i === 0) { medal = "🥇"; rowClass = "gold"; }
+				 else if (i === 1) { medal = "🥈"; rowClass = "silver"; }
+				 else if (i === 2) { medal = "🥉"; rowClass = "bronze"; }
+				 row.className = "leader-row " + rowClass;
+				 row.innerHTML = `
+					 <span class="leader-medal">${medal}</span>
+					 <span class="leader-name">${entry.name}</span>
+					 <span class="leader-coins">${entry.coins} <span style='font-size:1.1em;'>🪙</span></span>
+				 `;
+				 leaderboard.appendChild(row);
+			 });
+			 if (document.getElementById("participants")) {
+				 document.getElementById("participants").textContent = "Total participants: " + data.leaderboard.length;
+			 }
+		 }
+	 }
+	 </script>
 	<div class="overlay-main">
 		<div class="overlay-title">TikTok Auction Live</div>
 		<div class="auction-timer" id="timer">2:00</div>
