@@ -216,7 +216,17 @@
       <div class="participants" id="participants"></div>
     </div>
   </div>
+  <script src="/socket.io/socket.io.js"></script>
   <script>
+    const socket = io();
+
+    socket.on('connect', () => {
+      console.log('CONNECTED TO SERVER');
+    });
+
+    socket.on('update', (data) => {
+      console.log('UPDATE RECEIVED', data);
+    });
     // Example: set minimum and delay dynamically
     const min = 0; // change to your minimum value
     const delay = 3; // change to your snipe delay in seconds
