@@ -291,40 +291,32 @@
 			background: transparent;
 			margin: 0;
 			font-family: 'Inter', Arial, sans-serif;
-			color: #fff;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			height: 100vh;
-		}
-		.timer-remaining {
-			font-size: 4em;
-			font-weight: 800;
-			color: #00ffb0;
-			letter-spacing: 2px;
-			text-shadow: 0 2px 12px #00ffb055;
-			background: rgba(24,26,32,0.7);
-			border-radius: 16px;
-			padding: 0.2em 1.2em;
-		}
-	</style>
-</head>
-<body>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-	<style>
-		body {
-			background: #181a20;
-			font-family: 'Inter', sans-serif;
-			margin: 0;
-			color: #fff;
-		}
-		.overlay-container {
-			max-width: 420px;
-			margin: 0 auto;
-			padding: 24px 0 0 0;
-			display: flex;
-			flex-direction: column;
-			gap: 18px;
+			<script>
+			// Extract token from URL path
+			const pathParts = window.location.pathname.split('/');
+			const token = pathParts[pathParts.length - 1];
+
+			console.log("Fetching auction for token:", token);
+
+			// On page load, fetch auction data from backend
+			fetch(`https://tiktok-auction-board-1.onrender.com/api/auction/${token}`)
+				.then(res => res.json())
+				.then(data => {
+					// Use the returned data to update the overlay
+					if (data.item && document.getElementById('item')) {
+						document.getElementById('item').textContent = data.item;
+					}
+					if (typeof data.highestBid !== 'undefined' && document.getElementById('highestBid')) {
+						document.getElementById('highestBid').textContent = data.highestBid;
+					}
+					if (data.highestBidder && document.getElementById('highestBidder')) {
+						document.getElementById('highestBidder').textContent = data.highestBidder;
+					}
+					console.log("Auction data:", data);
+				})
+				.catch(err => {
+					console.error("Error fetching auction data:", err);
+				});
 			align-items: center;
 		}
 		.status-card {
