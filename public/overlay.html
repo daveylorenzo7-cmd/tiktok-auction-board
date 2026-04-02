@@ -165,6 +165,12 @@
 </head>
 <body>
 	<script>
+	console.log("Overlay script loaded");
+	const pathParts = window.location.pathname.split('/');
+	const token = pathParts[pathParts.length - 1];
+	console.log("Token:", token);
+	</script>
+	<script>
 	// Extract token from URL path
 	const pathParts = window.location.pathname.split('/');
 	const token = pathParts[pathParts.length - 1];
