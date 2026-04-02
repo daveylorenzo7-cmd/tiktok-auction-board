@@ -7,7 +7,7 @@ app.get('/test', (req, res) => {
 });
 
 app.get('/overlay/:token', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'overlay2.html'));
+  res.sendFile(path.join(__dirname, 'public', 'overlay-new.html'));
 });
 
 // New auction info route

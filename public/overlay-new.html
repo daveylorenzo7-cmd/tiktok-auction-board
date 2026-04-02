@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NEW OVERLAY TEST</title>
+</head>
+<body>
+
+<h1 style="color:red;">THIS IS THE NEW OVERLAY</h1>
+
+<div id="players"></div>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+console.log("NEW FILE LOADED");
+
+// token
+const token = window.location.pathname.split('/').pop();
+
+// socket
+const socket = io("https://tiktok-auction-board-1.onrender.com", {
+  transports: ["websocket"]
+});
+
+socket.on("connect", () => {
+  console.log("CONNECTED");
+  socket.emit("join-auction", token);
+});
+
+socket.on("update", (data) => {
+  console.log("LIVE:", data);
+
+  const container = document.getElementById("players");
+  container.innerHTML = "";
+
+  if (data.players) {
+    data.players.forEach(p => {
+      const div = document.createElement("div");
+      div.innerText = p.name + " - " + p.score;
+      container.appendChild(div);
+    });
+  }
+});
+</script>
+
+</body>
+</html>
