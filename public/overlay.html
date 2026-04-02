@@ -223,14 +223,6 @@
     document.getElementById('min-value').textContent = min > 0 ? min + ' coins' : 'no minimum';
     document.getElementById('delay-value').textContent = delay + 's';
 
-    // Demo leaderboard data
-    const leaderboardData = [
-      { name: 'Alice', coins: 120, avatar: 'https://ui-avatars.com/api/?name=Alice' },
-      { name: 'Bob', coins: 90, avatar: 'https://ui-avatars.com/api/?name=Bob' },
-      { name: 'Charlie', coins: 60, avatar: 'https://ui-avatars.com/api/?name=Charlie' },
-      { name: 'Daisy', coins: 40, avatar: 'https://ui-avatars.com/api/?name=Daisy' },
-      { name: 'Eve', coins: 20, avatar: 'https://ui-avatars.com/api/?name=Eve' }
-    ];
 
     function renderLeaderboard(data) {
       const lb = document.getElementById('leaderboard');
