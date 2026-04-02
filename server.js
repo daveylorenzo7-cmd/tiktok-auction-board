@@ -490,3 +490,8 @@ app.get('/generate', (req, res) => {
   const url = `https://${host}/overlay/${token}`;
   res.json({ url });
 });
+const path = require('path');
+
+app.get('/overlay/:token', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'overlay.html'));
+});
