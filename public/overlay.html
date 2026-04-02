@@ -164,6 +164,41 @@
 	</style>
 </head>
 <body>
+	<script>
+	// Extract token from URL path
+	const pathParts = window.location.pathname.split('/');
+	const token = pathParts[pathParts.length - 1];
+	console.log("Token:", token);
+	// Display token on screen for testing
+	const tokenDiv = document.createElement('div');
+	tokenDiv.textContent = "Token: " + token;
+	tokenDiv.style.position = "fixed";
+	tokenDiv.style.bottom = "10px";
+	tokenDiv.style.right = "10px";
+	tokenDiv.style.background = "rgba(0,0,0,0.7)";
+	tokenDiv.style.color = "#fff";
+	tokenDiv.style.fontSize = "0.9em";
+	tokenDiv.style.padding = "4px 10px";
+	tokenDiv.style.borderRadius = "8px";
+	tokenDiv.style.zIndex = "9999";
+	document.body.appendChild(tokenDiv);
+
+	// Debugging: log fetch URL and errors
+	const fetchUrl = `/api/some-endpoint?token=${encodeURIComponent(token)}`;
+	console.log("Fetch URL:", fetchUrl);
+
+	fetch(fetchUrl)
+		.then(res => res.json())
+		.then(data => {
+			// ...your existing logic...
+		})
+		.catch(err => {
+			console.error("Fetch error:", err);
+			if (err && err.stack) {
+				console.error("Error stack:", err.stack);
+			}
+		});
+	</script>
 	<div class="overlay-main">
 		<div class="overlay-title">TikTok Auction Live</div>
 		<div class="auction-timer" id="timer">2:00</div>
