@@ -233,13 +233,11 @@
         <div class="timer-label">TIME REMAINING</div>
         <div class="timer-display" id="timer">2:00</div>
       </div>
-    <div class="info-bar">
-      <span class="info-label">Minimum:</span>
-      <span class="info-value" id="min-value">no minimum</span>
+    <div class="info-bar min">
+      <span class="info-label">NO MINIMUM</span>
     </div>
-    <div class="info-bar">
-      <span class="info-label">Snipe Delay:</span>
-      <span class="info-value orange" id="delay-value">20s</span>
+    <div class="info-bar snipe">
+      <span class="info-label">SNIPE DELAY 20S</span>
     </div>
     <div class="leaderboard-section">
       <div id="leaderboard"></div>
@@ -279,19 +277,13 @@ function updateTimerDisplay() {
 function renderLeaderboard(data) {
   const container = document.getElementById("leaderboard");
   container.innerHTML = "";
-  const medals = [
-    { medal: "🥇", cls: "gold" },
-    { medal: "🥈", cls: "silver" },
-    { medal: "🥉", cls: "bronze" }
-  ];
   data.forEach((user, index) => {
-    const div = document.createElement("div");
     let medal = "";
     let cls = "";
-    if (index < 3) {
-      medal = medals[index].medal;
-      cls = medals[index].cls;
-    }
+    if (index === 0) { medal = "🥇"; cls = "gold"; }
+    else if (index === 1) { medal = "🥈"; cls = "silver"; }
+    else if (index === 2) { medal = "🥉"; cls = "bronze"; }
+    const div = document.createElement("div");
     div.className = `leaderboard-entry${cls ? ' ' + cls : ''}`;
     div.innerHTML = `
       <span class="leaderboard-rank">${medal || index + 1}</span>
